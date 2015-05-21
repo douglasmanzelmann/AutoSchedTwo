@@ -1,3 +1,4 @@
+import com.gargoylesoftware.htmlunit.Page;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,6 +12,8 @@ import java.util.Scanner;
  * Created by dmanzelmann on 5/20/2015.
  */
 public class MediasiteLoginPage {
+    WebDriver driver;
+
     @FindBy(how = How.ID, using = "UserName")
     WebElement username;
 
@@ -20,10 +23,17 @@ public class MediasiteLoginPage {
     @FindBy(how = How.XPATH, using = "html/body/div[1]/div/div[2]/form/div/fieldset/p/input")
     WebElement submit;
 
-    public void login(String username, String password) {
+    public MediasiteLoginPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    public MediasiteHomePage login(String username, String password) {
         this.username.sendKeys(username);
         this.password.sendKeys(password);
         submit.click();
+
+        return new MediasiteHomePage(driver);
+
     }
 
     public static void main(String[] args) {
@@ -32,7 +42,8 @@ public class MediasiteLoginPage {
 
         driver.get("https://mediasite.umaryland.edu/Mediasite/Login?ReturnUrl=%2fmediasite%2fmanage");
 
-        MediasiteLoginPage page = PageFactory.initElements(driver, MediasiteLoginPage.class);
+        //MediasiteLoginPage page = new MediasiteLoginPage(driver);
+        MediasiteLoginPage loginPage =  PageFactory.initElements(driver, MediasiteLoginPage.class);
 
         Scanner input = new Scanner(System.in);
         System.out.println("username: ");
@@ -41,7 +52,7 @@ public class MediasiteLoginPage {
         System.out.println("password: ");
         String password = input.next();
 
-        page.login(username, password);
+        loginPage.login(username, password);
     }
 
 }
