@@ -5,6 +5,8 @@ import org.openqa.selenium.support.pagefactory.AjaxElementLocator;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 /**
@@ -36,7 +38,20 @@ public class UsingMediasite {
 
         MediasiteFolderPage folderPage = homePage.navigateToFolder("SP15 PHAR525");
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), folderPage);
-        folderPage.addNewPresentation();
+
+        MediasiteTemplatePage templatePage = folderPage.addNewPresentation();
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), templatePage);
+
+        MediasiteNewPresentationPage presentationPage = templatePage.selectDefaultTemplate();
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 30), presentationPage);
+
+        Queue<String> presenters = new LinkedList<>();
+        presenters.add("Fletcher, Steven");
+        presenters.add("Leach, Caitlin");
+        presenters.add("Manzelmann, Douglas");
+
+        presentationPage.createNewMediasitePresentation("Test title", "Test description", "5/25/2015",
+                "10", "00", "AM", presenters);
 
     }
 }

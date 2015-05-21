@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -19,7 +20,7 @@ public class MediasiteFolderPage {
     //@FindBy(how = How.ID, using = "AddNewEntity")
     //WebElement presentationAddSelect;
 
-    public MediasiteNewPresentationPage addNewPresentation() {
+    public MediasiteTemplatePage addNewPresentation() {
         // shouldn't have to do this
         // using new AjaxElementLocatorFactory(driver, 30)
         WebDriverWait wait = new WebDriverWait(driver, 30);
@@ -34,8 +35,7 @@ public class MediasiteFolderPage {
         presentationAdd.selectByValue("PresentationAdd");
         driver.findElement(By.id("PresentationAdd")).click();
 
-
-        return new MediasiteNewPresentationPage(driver);
+        return new MediasiteTemplatePage(driver);
     }
 
 
