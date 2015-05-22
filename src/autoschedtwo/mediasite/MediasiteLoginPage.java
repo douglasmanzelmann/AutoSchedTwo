@@ -14,8 +14,6 @@ import java.util.Scanner;
  * Created by dmanzelmann on 5/20/2015.
  */
 public class MediasiteLoginPage extends Mediasite {
-    WebDriver driver;
-
     @FindBy(how = How.ID, using = "UserName")
     WebElement username;
 

@@ -18,10 +18,6 @@ import javax.swing.*;
  * Created by dmanzelmann on 5/21/2015.
  */
 public class MediasiteFolderPage extends Mediasite{
-    WebDriver driver;
-
-    //@FindBy(how = How.ID, using = "AddNewEntity")
-    //WebElement presentationAddSelect;
 
     public MediasiteTemplatePage addNewPresentation() {
         // shouldn't have to do this

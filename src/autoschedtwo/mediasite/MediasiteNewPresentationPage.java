@@ -16,8 +16,6 @@ import java.util.Queue;
  * Created by dmanzelmann on 5/21/2015.
  */
 public class MediasiteNewPresentationPage extends Mediasite {
-    WebDriver driver;
-
     @FindBy(how = How.ID,  using = "Title")
     WebElement title;
 

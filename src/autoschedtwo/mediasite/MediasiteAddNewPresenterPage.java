@@ -13,8 +13,6 @@ import java.util.Queue;
  * Created by dmanzelmann on 5/21/2015.
  */
 public class MediasiteAddNewPresenterPage extends Mediasite {
-    WebDriver driver;
-
     @FindBy(how = How.ID, using = "LastName")
     WebElement lastName;
 

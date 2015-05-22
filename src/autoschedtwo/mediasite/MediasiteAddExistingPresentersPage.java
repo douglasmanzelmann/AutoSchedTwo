@@ -18,7 +18,6 @@ import java.util.Queue;
  * Created by dmanzelmann on 5/21/2015.
  */
 public class MediasiteAddExistingPresentersPage extends Mediasite {
-    WebDriver driver;
     WebDriverWait wait;
 
     @FindBy(how = How.ID, using = "SearchTerm")

@@ -12,8 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * Created by dmanzelmann on 5/20/2015.
  */
 public class MediasiteHomePage extends Mediasite {
-    WebDriver driver;
-
     @FindBy(how = How.PARTIAL_LINK_TEXT, using = "School of Pharmacy")
     WebElement schoolOfPharmacy;
 

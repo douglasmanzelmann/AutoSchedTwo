@@ -12,8 +12,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * Created by dmanzelmann on 5/21/2015.
  */
 public class MediasiteTemplatePage extends Mediasite {
-    WebDriver driver;
-
     @FindBy(how = How.PARTIAL_LINK_TEXT, using = "SOP Standard Template (2014)")
     WebElement sopStandardTemplate;
 
