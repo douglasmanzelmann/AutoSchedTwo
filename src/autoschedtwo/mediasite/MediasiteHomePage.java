@@ -1,3 +1,5 @@
+package autoschedtwo.mediasite;
+import autoschedtwo.mediasite.Mediasite;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 /**
  * Created by dmanzelmann on 5/20/2015.
  */
-public class MediasiteHomePage {
+public class MediasiteHomePage extends Mediasite {
     WebDriver driver;
 
     @FindBy(how = How.PARTIAL_LINK_TEXT, using = "School of Pharmacy")
@@ -35,7 +37,7 @@ public class MediasiteHomePage {
     }
 
     public MediasiteHomePage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
 }

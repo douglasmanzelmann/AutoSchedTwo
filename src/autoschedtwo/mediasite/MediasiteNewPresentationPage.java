@@ -1,3 +1,6 @@
+package autoschedtwo.mediasite;
+
+import autoschedtwo.mediasite.Mediasite;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,7 +15,7 @@ import java.util.Queue;
 /**
  * Created by dmanzelmann on 5/21/2015.
  */
-public class MediasiteNewPresentationPage {
+public class MediasiteNewPresentationPage extends Mediasite {
     WebDriver driver;
 
     @FindBy(how = How.ID,  using = "Title")
@@ -33,7 +36,7 @@ public class MediasiteNewPresentationPage {
     @FindBy(how = How.ID, using = "AmPm")
     WebElement timeOfDay;
 
-    @FindBy(how = How.ID, using = "Save")
+    @FindBy(how = How.XPATH, using = "html/body/div[6]/div[2]/div/div[1]/div[4]/div/a[1]")
     WebElement save;
 
     @FindBy(how = How.ID, using = "AddPresenter")
@@ -96,31 +99,32 @@ public class MediasiteNewPresentationPage {
     }
 
     public void setNewPresenters(Queue<String> presenters) {
+        boolean firstNewPresenter = true;
+
         Select addPresenterSelect = new Select(addPresenter);
 
         while (presenters.peek() != null) {
             String presenter = presenters.poll();
             addPresenterSelect.selectByValue("AddNew");
-            MediasiteAddNewPresentersPage newPresentersPage =
-                    PageFactory.initElements(driver, MediasiteAddNewPresentersPage.class);
+            if (!firstNewPresenter)
+                addPresenter.click();
+            else
+                firstNewPresenter = false;
+            MediasiteAddNewPresenterPage newPresentersPage =
+                    PageFactory.initElements(driver, MediasiteAddNewPresenterPage.class);
 
             String[] fullName = presenter.split(",");
             newPresentersPage.addNewPresenter(fullName[0], fullName[1].trim());
-
         }
-
-
     }
 
-    public MediasiteNewPresentationReviewPage save() {
-        return PageFactory.initElements(driver, MediasiteNewPresentationReviewPage.class);
+    public void save() {
+        save.click();
     }
 
 
-    public void createNewMediasitePresentation(String t, String d,
-                                                                             String r, String h,
-                                                                             String m, String tod,
-                                                                             Queue<String> p) {
+    public MediasiteNewPresentationReviewPage createNewMediasitePresentation(String t, String d, String r, String h, String m,
+                                               String tod, Queue<String> p) {
         setTitle(t);
         setDescription(d);
         setRecordDate(r);
@@ -131,13 +135,15 @@ public class MediasiteNewPresentationPage {
 
         Queue<String> newPresenters = setExistingPresenters(p);
 
-        if (newPresenters.size() > 0)
+        if (newPresenters.size() > 0) {
             setNewPresenters(newPresenters);
+        }
+        save();
 
-
+        return PageFactory.initElements(driver, MediasiteNewPresentationReviewPage.class);
     }
 
     public MediasiteNewPresentationPage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 }

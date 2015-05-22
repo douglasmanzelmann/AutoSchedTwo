@@ -1,4 +1,6 @@
-import com.gargoylesoftware.htmlunit.Page;
+package autoschedtwo.mediasite;
+
+import autoschedtwo.mediasite.Mediasite;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,7 +13,7 @@ import java.util.Scanner;
 /**
  * Created by dmanzelmann on 5/20/2015.
  */
-public class MediasiteLoginPage {
+public class MediasiteLoginPage extends Mediasite {
     WebDriver driver;
 
     @FindBy(how = How.ID, using = "UserName")
@@ -24,7 +26,7 @@ public class MediasiteLoginPage {
     WebElement submit;
 
     public MediasiteLoginPage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 
     public MediasiteHomePage login(String username, String password) {

@@ -1,3 +1,5 @@
+package autoschedtwo.mediasite;
+import autoschedtwo.mediasite.Mediasite;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,13 +17,14 @@ import java.util.Queue;
 /**
  * Created by dmanzelmann on 5/21/2015.
  */
-public class MediasiteAddExistingPresentersPage {
+public class MediasiteAddExistingPresentersPage extends Mediasite {
     WebDriver driver;
+    WebDriverWait wait;
 
     @FindBy(how = How.ID, using = "SearchTerm")
     WebElement searchTerm;
 
-    @FindBy(how = How.ID, using = "SearchButton")
+    @FindBy(how = How.PARTIAL_LINK_TEXT, using = "Search")
     WebElement searchButton;
 
     @FindBy(how = How.ID, using = "AddSelected")
@@ -34,7 +37,9 @@ public class MediasiteAddExistingPresentersPage {
     WebElement cancel;
 
     public void enterSearchTerm(String term) {
+        searchTerm.clear();
         searchTerm.sendKeys(term);
+        //new Actions(driver).moveToElement(searchTerm).sendKeys(term).build().perform();
     }
 
     public void clickSearch() {
@@ -43,14 +48,14 @@ public class MediasiteAddExistingPresentersPage {
     }
 
     public boolean selectFirstOption() {
-        if (!noResults.isDisplayed()) {
-            List<WebElement> results = driver.findElements(By.className("ResultsTable"));
-            WebElement firstResult = results.get(0);
-            firstResult.findElement(By.id("Check")).click();
-            return true;
+        if (noResults.isDisplayed()) {
+            return false;
         }
 
-        return false;
+        List<WebElement> results = driver.findElements(By.className("ResultsTable"));
+        WebElement firstResult = results.get(0);
+        firstResult.findElement(By.id("Check")).click();
+        return true;
     }
 
     public void clickAddSelected() {
@@ -64,20 +69,22 @@ public class MediasiteAddExistingPresentersPage {
     public Queue<String> addExistingPresenters(Queue<String> presenters) {
         Queue<String> presentersWhoDoNotExist = new LinkedList<>();
 
-        try {
-            // still need to find a better solution
-            Thread.sleep(5000);
-            while (presenters.peek() != null) {
+        while (presenters.peek() != null) {
+            try {
                 String presenter = presenters.poll();
-                WebDriverWait wait = new WebDriverWait(driver, 30);
-                wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("ResultsTable")));
+
+                //wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("SearchTerm")));
                 enterSearchTerm(presenter);
                 clickSearch();
+                // still need to find a better solution
+                Thread.sleep(5000);
+
                 if (!selectFirstOption()) {
                     presentersWhoDoNotExist.add(presenter);
                 }
-            }
-        } catch (InterruptedException e) { e.printStackTrace(); }
+            } catch (InterruptedException e) { e.printStackTrace(); }
+        }
+
 
         clickAddSelected();
 
@@ -86,6 +93,7 @@ public class MediasiteAddExistingPresentersPage {
 
 
     public MediasiteAddExistingPresentersPage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
+        wait = new WebDriverWait(driver, 30);
     }
 }

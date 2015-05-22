@@ -1,3 +1,6 @@
+package autoschedtwo.mediasite;
+
+import autoschedtwo.mediasite.Mediasite;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -14,7 +17,7 @@ import javax.swing.*;
 /**
  * Created by dmanzelmann on 5/21/2015.
  */
-public class MediasiteFolderPage {
+public class MediasiteFolderPage extends Mediasite{
     WebDriver driver;
 
     //@FindBy(how = How.ID, using = "AddNewEntity")
@@ -40,6 +43,6 @@ public class MediasiteFolderPage {
 
 
     public MediasiteFolderPage(WebDriver driver) {
-        this.driver = driver;
+        super(driver);
     }
 }

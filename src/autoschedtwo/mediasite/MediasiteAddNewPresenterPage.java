@@ -1,5 +1,9 @@
+package autoschedtwo.mediasite;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
@@ -8,7 +12,7 @@ import java.util.Queue;
 /**
  * Created by dmanzelmann on 5/21/2015.
  */
-public class MediasiteAddNewPresentersPage {
+public class MediasiteAddNewPresenterPage extends Mediasite {
     WebDriver driver;
 
     @FindBy(how = How.ID, using = "LastName")
@@ -29,7 +33,8 @@ public class MediasiteAddNewPresentersPage {
     }
 
     public void save() {
-        save.click();
+        WebElement addNewDialog = driver.findElement(By.id("DialogPresenterSelector"));
+        addNewDialog.findElement(By.id("Save")).click();
     }
 
     public void addNewPresenter(String lastName, String firstName) {
@@ -38,7 +43,7 @@ public class MediasiteAddNewPresentersPage {
         save();
     }
 
-    public MediasiteAddNewPresentersPage(WebDriver driver) {
-        this.driver = driver;
+    public MediasiteAddNewPresenterPage(WebDriver driver) {
+        super(driver);
     }
 }
