@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class UsingMediasite {
 
     public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\test\\Desktop\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
         ElementLocatorFactory factory = new AjaxElementLocatorFactory(driver, 30);
 
@@ -49,8 +49,9 @@ public class UsingMediasite {
         presenters.add("Fletcher, Steven");
         presenters.add("Leach, Caitlin");
         presenters.add("Manzelmann, Douglas");
+        presenters.add("Manzelmann, Franklin");
 
-        presentationPage.createNewMediasitePresentation("Test title", "Test description", "5/25/2015",
+        MediasiteNewPresentationReviewPage presentationReviewPage = presentationPage.createNewMediasitePresentation("Test title", "Test description", "5/25/2015",
                 "10", "00", "AM", presenters);
 
     }
