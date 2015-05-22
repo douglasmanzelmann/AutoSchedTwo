@@ -15,7 +15,7 @@ import java.util.Scanner;
 public class UsingMediasite {
 
     public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\test\\Desktop\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
         ElementLocatorFactory factory = new AjaxElementLocatorFactory(driver, 30);
 
