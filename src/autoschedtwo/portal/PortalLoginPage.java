@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.PageFactory;
 
 /**
  * Created by dmanzelmann on 5/22/2015.
@@ -26,11 +27,12 @@ public class PortalLoginPage extends Portal {
         password.sendKeys(p);
     }
 
-    public void login(String u, String p) {
+    public PortalScheduleEventsWeekPage login(String u, String p) {
         setUsername(u);
         setPassword(p);
         login.click();
 
+        return PageFactory.initElements(driver, PortalScheduleEventsWeekPage.class);
     }
 
     public PortalLoginPage(WebDriver driver) {
