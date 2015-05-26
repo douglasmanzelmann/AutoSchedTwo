@@ -1,5 +1,3 @@
-package autoschedtwo;
-
 import autoschedtwo.portal.PortalLoginPage;
 import autoschedtwo.portal.PortalScheduleEventsWeekPage;
 import org.openqa.selenium.WebDriver;
@@ -16,7 +14,7 @@ import java.util.Scanner;
 public class UsingPortal {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\douga_000\\Desktop\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
 
         //https://rxsecure.umaryland.edu/apps/schedules/view/?type=search&searchtype=resource&id=100&start=2015-05-24&scope=week
@@ -31,7 +29,7 @@ public class UsingPortal {
 
 
         driver.get("https://rxsecure.umaryland.edu/apps/schedules/view/?type=search&searchtype=resource&id=100&start=" +
-                        year + "-" + month + "-" + day + "&scope=week");
+                year + "-" + month + "-" + day + "&scope=week");
         PortalLoginPage loginPage = PageFactory.initElements(driver, PortalLoginPage.class);
         System.out.println("username: ");
         String username = input.next();
@@ -40,6 +38,9 @@ public class UsingPortal {
 
         PortalScheduleEventsWeekPage scheduleEventsWeekPage = loginPage.login(username, password);
         Iterator<WebElement> listIterator = scheduleEventsWeekPage.iterator();
-        
+
+        while (listIterator.hasNext()) {
+            System.out.println(listIterator.next());
+        }
     }
 }
