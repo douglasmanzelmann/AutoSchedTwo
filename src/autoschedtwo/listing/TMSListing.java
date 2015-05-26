@@ -1,9 +1,6 @@
 package autoschedtwo.listing;
 
-import autoschedtwo.tms.TMSConferenceTemplatesPage;
-import autoschedtwo.tms.TMSHomePage;
-import autoschedtwo.tms.TMSLoginPage;
-import autoschedtwo.tms.TMSNewConferencePage;
+import autoschedtwo.tms.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,15 +11,51 @@ import java.util.List;
  * Created by dmanzelmann on 5/26/2015.
  */
 public class TMSListing extends Listing {
-    WebDriver driver;
+    private WebDriver driver;
+    private String baltimoreLocation;
+    private String sgLocation;
 
     public TMSListing(List<WebElement> listing) {
         super(listing);
         driver = new ChromeDriver();
+
+        String[] locations = getLocation().split(" ");
+        setBaltimoreLocation(locations[0] + " " + locations[1]);
+        setSgLocation("USG " + locations[3]);
     }
 
-    public void schedule(String username, String password) {
+    public String getSgLocation() {
+        return sgLocation;
+    }
 
+    private void setSgLocation(String sgLocation) {
+        this.sgLocation = sgLocation;
+    }
+
+    public String getBaltimoreLocation() {
+        return baltimoreLocation;
+    }
+
+    private void setBaltimoreLocation(String baltimoreLocation) {
+        this.baltimoreLocation = baltimoreLocation;
+    }
+
+
+    public void schedule(String username, String password) {
+        String templateUserName = username.substring(1);
+
+        TMSLoginPage loginPage = new TMSLoginPage(driver);
+
+        TMSHomePage homePage = loginPage.login(username, password);
+
+        try {
+            TMSConferenceTemplatesPage conferenceTemplatesPage = homePage.navigateToConferenceTemplates();
+
+            TMSNewConferencePage newConferencePage =
+                    conferenceTemplatesPage.selectTemplateforVTC(baltimoreLocation,sgLocation);
+            TMSNewConferenceReviewPage newConferenceReviewPage =
+                    newConferencePage.createNewTMSSlot(templateUserName, getHour(getStartTime()))
+        }
 
     }
 }

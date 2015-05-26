@@ -2,6 +2,8 @@ package autoschedtwo.listing;
 
 import autoschedtwo.Scheduler;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.openqa.selenium.WebElement;
 
 import java.util.LinkedList;
@@ -33,6 +35,19 @@ public abstract class Listing implements Scheduler {
 
     public void setEndTime(DateTime endTime) {
         this.endTime = endTime;
+    }
+
+    protected static String getHour(DateTime date) {
+        return Integer.toString(date.getHourOfDay());
+    }
+
+    protected static String getMinute(DateTime date) {
+        return Integer.toString(date.getMinuteOfHour());
+    }
+
+    protected static String getTimeOfDay(DateTime date) {
+        DateTimeFormatter timeOfDay = DateTimeFormat.forPattern("a");
+        return date.toString(timeOfDay);
     }
 
     public String getLocation() {
