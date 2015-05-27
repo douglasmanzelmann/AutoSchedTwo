@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -87,10 +88,12 @@ public class PortalScheduleEventsEvent {
 
 
     public PortalScheduleEventsEvent parse() {
-        setDate(elements.get(0).getAttribute("title")); // i.e., Apr 19
-        setTimes(elements.get(1).getText()); // i.e., 10:00 AM - 10:50 AM
-        setLocations(Arrays.asList(elements.get(2).getText().split("\n")));
-        setClassDetails(StringUtils.join(elements.get(3).getText().trim().split("\n"), ";"));
+        Iterator<WebElement> iterator = elements.iterator();
+
+        setDate(iterator.next().getAttribute("title")); // i.e., Apr 19
+        setTimes(iterator.next().getText()); // i.e., 10:00 AM - 10:50 AM
+        setLocations(Arrays.asList(iterator.next().getText().split("\n")));
+        setClassDetails(StringUtils.join(iterator.next().getText().trim().split("\n"), ";"));
 
         if (classDetails.contains("Recorded in Mediasite"))
             setActivity("Mediasite");
@@ -101,7 +104,7 @@ public class PortalScheduleEventsEvent {
         else
             setActivity("Generic");
 
-        setFaculty(Arrays.asList(elements.get(4).getText().split("\n")));
+        setFaculty(Arrays.asList(iterator.next().getText().split("\n")));
         return this;
     }
 
