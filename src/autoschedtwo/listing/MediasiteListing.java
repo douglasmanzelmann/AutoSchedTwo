@@ -55,8 +55,8 @@ public class MediasiteListing extends Listing {
         PageFactory.initElements(factory, newPresentationPage);
 
         MediasiteNewPresentationReviewPage newPresentationReviewPage =
-                newPresentationPage.createNewMediasitePresentation(getClassName() + getDateInMDYFormat(),
-                        getDescription(), getDateInMDYFormat(), getHour(getStartTime()), getMinute(getStartTime()),
+                newPresentationPage.createNewMediasitePresentation(getClassName() + getDateInMDYFormat(getStartTime()),
+                        getDescription(), getDateInMDYFormat(getStartTime()), getHour(getStartTime()), getMinute(getStartTime()),
                         getTimeOfDay(getStartTime()), getFacultyAsQueue());
     }
 
@@ -76,17 +76,6 @@ public class MediasiteListing extends Listing {
             facultyQueue.add(s);
 
         return facultyQueue;
-    }
-
-    /**
-     * Return the date as a String in MM/DD/YYYY format
-     * @return String of date in MM/DD/YYYY format
-     */
-    private String getDateInMDYFormat() {
-        DateTime date = getStartTime();
-
-        DateTimeFormatter MDYFmt = DateTimeFormat.forPattern("MM/dd/y");
-        return date.toString(MDYFmt);
     }
 
     private static String getSemesterFolder(DateTime date, String classPrefix) {

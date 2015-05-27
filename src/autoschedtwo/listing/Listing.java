@@ -6,6 +6,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -48,6 +49,32 @@ public abstract class Listing implements Scheduler {
     protected static String getTimeOfDay(DateTime date) {
         DateTimeFormatter timeOfDay = DateTimeFormat.forPattern("a");
         return date.toString(timeOfDay);
+    }
+
+    /**
+     * Return the date as a String in MM/DD/YYYY format
+     * @param date a DateTime object
+     * @return a String
+     */
+    protected static String getDateInMDYFormat(DateTime date) {
+        DateTimeFormatter MDYFmt = DateTimeFormat.forPattern("MM/dd/y");
+        return date.toString(MDYFmt);
+    }
+
+
+    /**
+     * Return the time in "h:mm a" format
+     * @param date a DateTime object
+     * @return a String
+     */
+    protected static String getTime(DateTime date) {
+        DateTimeFormatter time = DateTimeFormat.forPattern("h:mm a");
+        return date.toString(time);
+    }
+
+    protected static String durationInMinutes(DateTime one, DateTime two) {
+        org.joda.time.Duration duration = new org.joda.time.Duration(one, two);
+        return Long.toString(duration.getStandardMinutes());
     }
 
     public String getLocation() {

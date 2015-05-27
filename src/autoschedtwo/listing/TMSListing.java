@@ -48,14 +48,17 @@ public class TMSListing extends Listing {
 
         TMSHomePage homePage = loginPage.login(username, password);
 
+        // actually need to try a different codec.
         try {
             TMSConferenceTemplatesPage conferenceTemplatesPage = homePage.navigateToConferenceTemplates();
 
             TMSNewConferencePage newConferencePage =
                     conferenceTemplatesPage.selectTemplateforVTC(baltimoreLocation,sgLocation);
             TMSNewConferenceReviewPage newConferenceReviewPage =
-                    newConferencePage.createNewTMSSlot(templateUserName, getHour(getStartTime()))
-        }
+                    newConferencePage.createNewTMSSlot(templateUserName, getDateInMDYFormat(getStartTime()),
+                            getTime(getStartTime()), getDateInMDYFormat(getEndTime()), getTime(getEndTime()),
+                            durationInMinutes(getStartTime(), getEndTime()));
+        } catch (CodecInUseException e) { e.printStackTrace(); }
 
     }
 }
