@@ -35,11 +35,18 @@ public class PortalScheduleEventsWeekPage extends Portal {
         }
     }
 
-    public ArrayList<ArrayList<WebElement>> getScheduleElements() {
-        ArrayList<ArrayList<WebElement>> elementMatrix = new ArrayList<ArrayList<WebElement>>();
+    public List<PortalScheduleEventsEvent> getScheduleElements() {
+        //ArrayList<ArrayList<WebElement>> elementMatrix = new ArrayList<ArrayList<WebElement>>();
+        List<PortalScheduleEventsEvent> eventsList = new ArrayList<>();
         List<WebElement> agendaItems = agenda.findElements(By.tagName("tr"));
 
         for (WebElement row : agendaItems) {
+            eventsList.add(new PortalScheduleEventsEvent(driver,
+                    row.findElements(By.tagName("td"))).parse());
+
+        }
+
+        /*for (WebElement row : agendaItems) {
             List<WebElement> columns = row.findElements(By.tagName("td"));
             ArrayList<WebElement> rowList = new ArrayList<>();
             for (WebElement column : columns) {
@@ -48,7 +55,8 @@ public class PortalScheduleEventsWeekPage extends Portal {
             elementMatrix.add(rowList);
         }
 
-        return elementMatrix;
+        return elementMatrix;*/
+        return eventsList;
     }
 
     public Iterator<WebElement> iterator() {

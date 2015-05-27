@@ -1,5 +1,6 @@
 package autoschedtwo.listing;
 
+import autoschedtwo.portal.PortalScheduleEventsEvent;
 import autoschedtwo.tms.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,13 +16,15 @@ public class TMSListing extends Listing {
     private String baltimoreLocation;
     private String sgLocation;
 
-    public TMSListing(List<WebElement> listing) {
-        super(listing);
+    public TMSListing(PortalScheduleEventsEvent event) {
+        super(event);
         driver = new ChromeDriver();
 
-        String[] locations = getLocation().split(" ");
+        setBaltimoreLocation(getLocations().get(0));
+        setSgLocation(getLocations().get(1).replace("SGIII", "USG"));
+        /*String[] locations = getLocation().split(" ");
         setBaltimoreLocation(locations[0] + " " + locations[1]);
-        setSgLocation("USG " + locations[3]);
+        setSgLocation("USG " + locations[3]);*/
     }
 
     public String getSgLocation() {
@@ -41,12 +44,12 @@ public class TMSListing extends Listing {
     }
 
 
-    public void schedule(String username, String password) {
+    public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
         String templateUserName = username.substring(1);
 
         TMSLoginPage loginPage = new TMSLoginPage(driver);
 
-        TMSHomePage homePage = loginPage.login(username, password);
+        TMSHomePage homePage = loginPage.login(tmsUsername, tmsPassword);
 
         // actually need to try a different codec.
         try {
@@ -55,8 +58,8 @@ public class TMSListing extends Listing {
             TMSNewConferencePage newConferencePage =
                     conferenceTemplatesPage.selectTemplateforVTC(baltimoreLocation,sgLocation);
             TMSNewConferenceReviewPage newConferenceReviewPage =
-                    newConferencePage.createNewTMSSlot(templateUserName, getDateInMDYFormat(getStartTime()),
-                            getTime(getStartTime()), getDateInMDYFormat(getEndTime()), getTime(getEndTime()),
+                    newConferencePage.createNewTMSSlot(templateUserName, getDateInMDYFormat(getStartTime().plusDays(20)),
+                            getTime(getStartTime()), getDateInMDYFormat(getEndTime().plusDays(20)), getTime(getEndTime()),
                             durationInMinutes(getStartTime(), getEndTime()));
         } catch (CodecInUseException e) { e.printStackTrace(); }
 

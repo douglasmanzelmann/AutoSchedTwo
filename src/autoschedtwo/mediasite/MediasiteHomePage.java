@@ -18,12 +18,26 @@ public class MediasiteHomePage extends Mediasite {
     @FindBy(how = How.PARTIAL_LINK_TEXT, using = "PharmD")
     WebElement pharmD;
 
+    @FindBy(how = How.PARTIAL_LINK_TEXT, using = "Training")
+    WebElement training;
+
+    @FindBy(how = How.PARTIAL_LINK_TEXT, using = "Testing")
+    WebElement testing;
+
     public void navigateToSchoolOfPharmacy() {
         schoolOfPharmacy.click();
     }
 
     public void navigateToPharmD() {
         pharmD.click();
+    }
+
+    public void navigateToTraing() {
+        training.click();
+    }
+
+    public void navigateToTesting() {
+        testing.click();
     }
 
     public MediasiteFolderPage navigateToFolder(String folder) {

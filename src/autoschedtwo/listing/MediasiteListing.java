@@ -1,6 +1,7 @@
 package autoschedtwo.listing;
 
 import autoschedtwo.mediasite.*;
+import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -25,18 +26,15 @@ public class MediasiteListing extends Listing {
 
     private String description;
 
-    public MediasiteListing(List<WebElement> listing) {
-        super(listing);
+    public MediasiteListing(PortalScheduleEventsEvent event) {
+        super(event);
         driver = new ChromeDriver();
         factory = new AjaxElementLocatorFactory(driver, 30);
 
-        List<String> classDetails = Arrays.asList(getClassName().trim().split("\n"));
-        setClassName(classDetails.get(0));
-        setDescription(classDetails.get(2));
-
+        setDescription(event.getClassDetails().split(";")[2].trim());
     }
 
-    public void schedule(String username, String password) {
+    public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
         driver.get("https://mediasite.umaryland.edu/Mediasite/Login?ReturnUrl=%2fmediasite%2fmanage");
 
         MediasiteLoginPage loginPage = PageFactory.initElements(driver, MediasiteLoginPage.class);
@@ -44,6 +42,7 @@ public class MediasiteListing extends Listing {
         PageFactory.initElements(factory, homePage);
         homePage.navigateToSchoolOfPharmacy();
         homePage.navigateToPharmD();
+
 
         MediasiteFolderPage folderPage = homePage.navigateToFolder(getSemesterFolder(getStartTime(), getClassPrefix()));
         PageFactory.initElements(factory, folderPage);
@@ -91,7 +90,14 @@ public class MediasiteListing extends Listing {
     }
 
     public static void main(String[] args) {
-        System.out.println(new DateTime().getMonthOfYear());
+        String temp = "PHAR535 Pharmaceutics Lectures \n" +
+                "\n" +
+                "28: Biologics 1 (Available in Mediasite- Watch by the end of this week) \n" +
+                "\n" +
+                " Online Activity";
+        List<String> list = Arrays.asList(temp.split("\n"));
+        System.out.println(list.get(2));
+
     }
 
 }

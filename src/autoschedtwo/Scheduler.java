@@ -7,5 +7,5 @@ import org.openqa.selenium.WebDriver;
  */
 public interface Scheduler {
 
-    public void schedule(String username, String password);
+    public void schedule(String portalUsername, String portalPassword, String tmsUsername, String tmsPassword);
 }

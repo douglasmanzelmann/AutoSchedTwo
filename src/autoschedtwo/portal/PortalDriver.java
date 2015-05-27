@@ -5,12 +5,13 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
 public class PortalDriver extends Portal {
-    public ArrayList<ArrayList<WebElement>> getScheduleElements(String username, String password, int year, int month, int day) {
+    public List<PortalScheduleEventsEvent> getScheduleElements(String username, String password, int year, int month, int day) {
         driver.get("https://rxsecure.umaryland.edu/apps/schedules/view/?type=search&searchtype=resource&id=100&start=" +
                 year + "-" + month + "-" + day + "&scope=week");
         PortalLoginPage loginPage = PageFactory.initElements(driver, PortalLoginPage.class);

@@ -1,15 +1,18 @@
 package autoschedtwo.listing;
 
+import autoschedtwo.DateUtils;
 import autoschedtwo.Scheduler;
+import autoschedtwo.portal.PortalScheduleEventsEvent;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.openqa.selenium.WebElement;
 
-import java.time.Duration;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Queue;
+
 
 /**
  * Created by dmanzelmann on 5/26/2015.
@@ -17,10 +20,40 @@ import java.util.Queue;
 public abstract class Listing implements Scheduler {
     private DateTime startTime;
     private DateTime endTime;
-    private String location;
+    private List<String> locations;
     private String className;
     private String classPrefix;
     private List<String> faculty;
+
+    public Listing(PortalScheduleEventsEvent event) {
+        setStartTime(DateUtils.getDateTimeObject(event.getDate(), event.getStartTime()));
+        setEndTime(DateUtils.getDateTimeObject(event.getDate(), event.getEndTime()));
+        setLocations(event.getLocations());
+        setClassName(event.getClassDetails().split(";")[0]);
+        setClassPrefix(className.split(" ")[0]);
+        setFaculty(event.getFaculty());
+
+
+
+        /*String tempTime = listing.get(1).getText().trim(); // entire duration of event, i.e., 4:00pm - 5:00pm
+        System.out.println(tempTime);
+        int timeSplit = tempTime.indexOf('—');
+        System.out.println(timeSplit);
+        String startTimeString = tempTime.substring(0, timeSplit).trim();
+        DateTime startTime = DateUtils.getDateTimeObject(listing.get(0).getText(), startTimeString);
+        String endTimeString = tempTime.substring(timeSplit + 1).trim();
+        DateTime endTime = DateUtils.getDateTimeObject(listing.get(0).getText(), endTimeString);
+
+
+        setStartTime(startTime);
+        setEndTime(endTime);
+        setLocation(listing.get(2).getText().replace("\n", " ").trim());
+        setClassName(listing.get(3).getText().trim().split("\n")[0]);
+        setClassPrefix(className.substring(0, className.indexOf(" ")));
+        setFaculty(Arrays.asList(listing.get(4).getText().split("\n")));*/
+
+        //System.out.println(this);
+    }
 
     public DateTime getStartTime() {
         return startTime;
@@ -44,6 +77,41 @@ public abstract class Listing implements Scheduler {
 
     protected static String getMinute(DateTime date) {
         return Integer.toString(date.getMinuteOfHour());
+    }
+
+    protected static int getCurrentYear() {
+        return new DateTime().getYear();
+    }
+
+    protected static int convertMonthAbbreviationToInt(String monthAbbreviation) {
+        switch(monthAbbreviation) {
+            case "Jan":
+                return 1;
+            case "Feb":
+                return 2;
+            case "Mar":
+                return 3;
+            case "Apr":
+                return 4;
+            case "May":
+                return 5;
+            case "Jun":
+                return 6;
+            case "Jul":
+                return 7;
+            case "Aug":
+                return 8;
+            case "Sep":
+                return 9;
+            case "Oct":
+                return 10;
+            case "Nov":
+                return 11;
+            case "Dec":
+                return 12;
+        }
+
+        return -1;
     }
 
     protected static String getTimeOfDay(DateTime date) {
@@ -77,12 +145,12 @@ public abstract class Listing implements Scheduler {
         return Long.toString(duration.getStandardMinutes());
     }
 
-    public String getLocation() {
-        return location;
+    public List<String> getLocations() {
+        return new ArrayList<>(locations);
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocations(List<String> locations) {
+        this.locations = new ArrayList<>(locations);
     }
 
     public String getClassPrefix() {
@@ -109,12 +177,12 @@ public abstract class Listing implements Scheduler {
         this.className = className;
     }
 
-    public Listing(List<WebElement> listing) {
-        setStartTime(startTime);
-        setEndTime(endTime);
-        setLocation(location);
-        setClassName(className);
-        setClassPrefix(className);
-        setFaculty(faculty);
+    public String toString() {
+        return className + " " + StringUtils.join(locations, ",") + " " + startTime + " " + endTime;
+    }
+
+    public static void main(String[] args) {
+        String time = "10:00 AM — 10:50 AM";
+        System.out.println(time.indexOf('—'));
     }
 }
