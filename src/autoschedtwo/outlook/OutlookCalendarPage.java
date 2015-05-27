@@ -7,6 +7,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.List;
+
 /**
  * Created by dmanzelmann on 5/27/2015.
  */
@@ -19,7 +21,11 @@ public class OutlookCalendarPage extends Outlook {
     }
 
     private void setDayToSchedule(int date) {
-        driver.findElement(By.xpath("//span[text()='" + date + "']")).click();
+        List<WebElement> dates = driver.findElements(By.xpath("//span[text()='" + date + "']"));
+        if (dates.size() > 1)
+            dates.get(1).click();
+        else
+            dates.get(0).click();
     }
 
     private void scheduleNewAppointment() {
