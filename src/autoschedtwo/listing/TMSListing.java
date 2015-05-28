@@ -18,13 +18,9 @@ public class TMSListing extends Listing {
 
     public TMSListing(PortalScheduleEventsEvent event) {
         super(event);
-        driver = new ChromeDriver();
 
         setBaltimoreLocation(getLocations().get(0));
         setSgLocation(getLocations().get(1).replace("SGIII", "USG"));
-        /*String[] locations = getLocation().split(" ");
-        setBaltimoreLocation(locations[0] + " " + locations[1]);
-        setSgLocation("USG " + locations[3]);*/
     }
 
     public String getSgLocation() {
@@ -45,6 +41,7 @@ public class TMSListing extends Listing {
 
 
     public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
+        driver = new ChromeDriver();
         String templateUserName = username.substring(1);
 
         TMSLoginPage loginPage = new TMSLoginPage(driver);

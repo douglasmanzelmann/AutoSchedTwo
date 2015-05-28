@@ -5,10 +5,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by dmanzelmann on 5/27/2015.
@@ -35,10 +40,9 @@ public class PortalScheduleEventsEvent {
     }
 
     private void setTimes(String time) {
-        String SPLIT = "—";
-
-        startTime = time.substring(0, time.indexOf(SPLIT));
-        endTime = time.substring(time.indexOf(SPLIT) + 1);
+        String[] times = time.split(" ");
+        startTime = times[0] + " " + times[1];
+        endTime = times[3] + " " + times[4];
     }
 
     public String getStartTime() {
@@ -122,8 +126,15 @@ public class PortalScheduleEventsEvent {
                 " Recorded in Mediasite";
         System.out.println(StringUtils.join(test.trim().split("\n"), ";"));
 
-        String SPLIT = " — ";
-        String time = "10:00 AM — 10:50 AM";
-        System.out.println("contains split: " + time.contains(SPLIT));
+        String pattern = "(\\d\\d:\\d\\d [AP]M)";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher("10:00 AM — 10:50 AM");
+        while (m.find()) {
+            System.out.println("found value: " + m.group(0));
+        }
+
+        //String SPLIT = " — ";
+        //String time = "10:00 AM — 10:50 AM";
+        //System.out.println("contains split: " + time.contains(SPLIT));
     }
 }

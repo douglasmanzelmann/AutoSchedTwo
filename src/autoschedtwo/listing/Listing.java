@@ -32,27 +32,6 @@ public abstract class Listing implements Scheduler {
         setClassName(event.getClassDetails().split(";")[0]);
         setClassPrefix(className.split(" ")[0]);
         setFaculty(event.getFaculty());
-
-
-
-        /*String tempTime = listing.get(1).getText().trim(); // entire duration of event, i.e., 4:00pm - 5:00pm
-        System.out.println(tempTime);
-        int timeSplit = tempTime.indexOf('—');
-        System.out.println(timeSplit);
-        String startTimeString = tempTime.substring(0, timeSplit).trim();
-        DateTime startTime = DateUtils.getDateTimeObject(listing.get(0).getText(), startTimeString);
-        String endTimeString = tempTime.substring(timeSplit + 1).trim();
-        DateTime endTime = DateUtils.getDateTimeObject(listing.get(0).getText(), endTimeString);
-
-
-        setStartTime(startTime);
-        setEndTime(endTime);
-        setLocation(listing.get(2).getText().replace("\n", " ").trim());
-        setClassName(listing.get(3).getText().trim().split("\n")[0]);
-        setClassPrefix(className.substring(0, className.indexOf(" ")));
-        setFaculty(Arrays.asList(listing.get(4).getText().split("\n")));*/
-
-        //System.out.println(this);
     }
 
     public DateTime getStartTime() {

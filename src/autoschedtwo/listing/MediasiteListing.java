@@ -28,13 +28,12 @@ public class MediasiteListing extends Listing {
 
     public MediasiteListing(PortalScheduleEventsEvent event) {
         super(event);
-        driver = new ChromeDriver();
-        factory = new AjaxElementLocatorFactory(driver, 30);
-
         setDescription(event.getClassDetails().split(";")[2].trim());
     }
 
     public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
+        driver = new ChromeDriver();
+        factory = new AjaxElementLocatorFactory(driver, 30);
         driver.get("https://mediasite.umaryland.edu/Mediasite/Login?ReturnUrl=%2fmediasite%2fmanage");
 
         MediasiteLoginPage loginPage = PageFactory.initElements(driver, MediasiteLoginPage.class);

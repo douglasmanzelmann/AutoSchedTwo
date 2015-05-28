@@ -51,11 +51,6 @@ public class AutoSched {
         PortalDriver portalDriver = new PortalDriver(driver);
         List<PortalScheduleEventsEvent> events = portalDriver.getScheduleElements(username, password, year, month, day);
         for (PortalScheduleEventsEvent event : events) {
-            /*for (WebElement element : list) {
-                System.out.print(element.getText());
-            }
-            System.out.println();*/
-
             Listing listing = ListingFactory.createListing(event);
             System.out.println(listing);
             //listing.schedule(username, password, tmsUsername, tmsPassword);
