@@ -31,6 +31,10 @@ public class MediasiteListing extends Listing {
         setDescription(event.getClassDetails().split(";")[2].trim());
     }
 
+    public Listing call() {
+        schedule();
+    }
+
     public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
         driver = new ChromeDriver();
         factory = new AjaxElementLocatorFactory(driver, 30);

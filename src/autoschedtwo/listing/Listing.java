@@ -7,17 +7,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.openqa.selenium.WebElement;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public abstract class Listing implements Scheduler {
+public abstract class Listing implements Scheduler, Callable<Listing> {
     private DateTime startTime;
     private DateTime endTime;
     private List<String> locations;

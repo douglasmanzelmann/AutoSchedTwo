@@ -26,6 +26,7 @@ public class AutoSchedGUI {
     private JLabel tmsPasswordLabel = new JLabel("TMS Password");
     private JTextField tmsUserNameField = new JTextField(10);
     private JPasswordField tmsPasswordField = new JPasswordField(10);
+    private JButton startbutton = new JButton("Start");
 
     // Main panel for dates
     private JPanel readschedDatesPanel = new JPanel();
@@ -91,6 +92,7 @@ public class AutoSchedGUI {
         readSchedPanel.add(portalLoginPanel);
         readSchedPanel.add(tmsLoginPanel);
         readSchedPanel.add(readschedDatesPanel);
+        readSchedPanel.add(startbutton);
 
 
         listScrollPane.add(listingJList);

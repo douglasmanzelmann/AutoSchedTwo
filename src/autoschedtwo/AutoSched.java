@@ -17,7 +17,22 @@ import java.util.Scanner;
  * Created by dmanzelmann on 5/26/2015.
  */
 public class AutoSched {
+    ChromeOptions options;
     WebDriver driver;
+
+    public AutoSched() {
+        options.addArguments("--disable-extensions");
+        driver = new ChromeDriver(options);
+    }
+
+    public List<PortalScheduleEventsEvent> readPortalSchedule(String username, String password, int year, int month, int day) {
+        PortalDriver portalDriver = new PortalDriver(driver);
+        List<PortalScheduleEventsEvent> portalScheduleEventsEventList =
+                portalDriver.getScheduleElements(username, password, year, month, day);
+
+        return portalScheduleEventsEventList;
+    }
+
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
