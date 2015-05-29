@@ -15,9 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * Created by dmanzelmann on 5/26/2015.
@@ -158,12 +156,14 @@ public class AutoSchedGUI {
         private ChromeOptions options = new ChromeOptions();
         private WebDriver driver;
         private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        private CompletionService<Listing> completionService = new ExecutorCompletionService<Listing>(executor);
         private String username;
         private String password;
         private int year;
         private int month;
         private int day;
-        private List<Listing> tempList;
+        private int totalFutures;
+        //private List<Future> tempList;
 
         public AutoSchedWorker(String username,
                                String password, int year, int month, int day) {
@@ -173,7 +173,7 @@ public class AutoSchedGUI {
             this.year = year;
             this.month = month;
             this.day = day;
-            this.tempList = new ArrayList<>();
+            //this.tempList = new ArrayList<>();
         }
 
         @Override
@@ -183,9 +183,12 @@ public class AutoSchedGUI {
             PortalDriver portalDriver = new PortalDriver(driver);
             java.util.List<PortalScheduleEventsEvent> portalScheduleEventsEventList =
                     portalDriver.getScheduleElements(username, password, year, month, day);
+            totalFutures = portalScheduleEventsEventList.size();
 
             for (PortalScheduleEventsEvent event : portalScheduleEventsEventList) {
-                tempList.add(ListingFactory.createListing(event));
+                Callable<Listing> callable = new ListingFactory(event);
+                Future<Listing> future = completionService.submit(callable);
+                //tempList.add(future);
 
             }
             return null;
@@ -193,8 +196,18 @@ public class AutoSchedGUI {
 
         @Override
         protected void done() {
-            for (Listing listing : tempList) {
-                listingDefaultListModel.addElement(listing);
+            Future<Listing> completedFuture;
+            Listing newListing;
+
+            while (totalFutures > 0) {
+                try {
+                    completedFuture = completionService.take();
+                    totalFutures--;
+                    newListing = completedFuture.get();
+                    listingDefaultListModel.addElement(newListing);
+                } catch (InterruptedException | ExecutionException e) {
+                    System.out.println("Listing not created");
+                }
             }
         }
     }

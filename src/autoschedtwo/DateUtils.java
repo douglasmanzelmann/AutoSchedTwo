@@ -67,7 +67,6 @@ public final class DateUtils {
 
     public static int getHour(String time) {
         int result = -1;
-        System.out.println("time: " + time);
         int split = time.indexOf(' ');
         String timeField = time.substring(0, split);
         String amOrPm = time.substring(time.indexOf(' ')).trim();
