@@ -1,11 +1,23 @@
 package autoschedtwo;
 
 import autoschedtwo.listing.Listing;
+import autoschedtwo.listing.ListingFactory;
+import autoschedtwo.portal.PortalDriver;
+import autoschedtwo.portal.PortalScheduleEventsEvent;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
-import javax.management.remote.JMXConnectorFactory;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by dmanzelmann on 5/26/2015.
@@ -18,7 +30,7 @@ public class AutoSchedGUI {
     private JPanel portalLoginPanel = new JPanel();
     private JLabel portalUserNameLabel = new JLabel("Portal/Mediasite Username");
     private JLabel portalPasswordLabel = new JLabel("Portal/Mediasite Password");
-    private JComboBox portalUserNameBox = new JComboBox();
+    private JTextField portalUserNameField = new JTextField(10);
     private JPasswordField portalPasswordField = new JPasswordField(10);
 
     private JPanel tmsLoginPanel = new JPanel();
@@ -36,17 +48,14 @@ public class AutoSchedGUI {
 
     // ScrollPanel for list
     private JScrollPane listScrollPane = new JScrollPane();
-    private DefaultListModel<Listing> listingDefaultListModel;
-    private JList<Listing> listingJList;
+    private DefaultListModel<Listing> listingDefaultListModel = new DefaultListModel<>();
+    private JList<Listing> listingJList = new JList<>(listingDefaultListModel);
 
     // Main panel
     private JPanel contentPanel = new JPanel(new BorderLayout());
 
     public AutoSchedGUI() {
-        listingDefaultListModel = new DefaultListModel<>();
-        listingJList = new JList<>(listingDefaultListModel);
-
-        portalLoginPanel.setBorder(
+         portalLoginPanel.setBorder(
                 BorderFactory.createTitledBorder(
                         BorderFactory.createEtchedBorder(
                                 EtchedBorder.RAISED, Color.GRAY, Color.DARK_GRAY),
@@ -54,7 +63,7 @@ public class AutoSchedGUI {
                 )
         );
         portalLoginPanel.add(portalUserNameLabel);
-        portalLoginPanel.add(portalUserNameBox);
+        portalLoginPanel.add(portalUserNameField);
         portalLoginPanel.add(portalPasswordLabel);
         portalLoginPanel.add(portalPasswordField);
 
@@ -93,9 +102,14 @@ public class AutoSchedGUI {
         readSchedPanel.add(tmsLoginPanel);
         readSchedPanel.add(readschedDatesPanel);
         readSchedPanel.add(startbutton);
+        startbutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                populateList();
+            }
+        });
 
-
-        listScrollPane.add(listingJList);
+        listScrollPane.setViewportView(listingJList);
         contentPanel.add(readSchedPanel, BorderLayout.PAGE_START);
         contentPanel.add(listScrollPane, BorderLayout.CENTER);
     }
@@ -115,6 +129,22 @@ public class AutoSchedGUI {
         frame.setVisible(true);
     }
 
+    private void populateList() {
+        String username = portalUserNameField.getText();
+        String password = new String(portalPasswordField.getPassword());
+        int year = Integer.parseInt(schedYearText.getText());
+        int month = Integer.parseInt(schedMonthText.getText());
+        int day = Integer.parseInt(schedDayText.getText());
+
+        AutoSchedWorker autoSchedWorker = new AutoSchedWorker(username, password,
+                year, month, day);
+        autoSchedWorker.execute();
+
+        //try {
+        //    autoSchedWorker.get();
+        //} catch (InterruptedException | ExecutionException ex) { ex.printStackTrace(); }
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -122,5 +152,50 @@ public class AutoSchedGUI {
                 createAndShowGui();
             }
         });
+    }
+
+    private class AutoSchedWorker extends SwingWorker<Void, Listing> {
+        private ChromeOptions options = new ChromeOptions();
+        private WebDriver driver;
+        private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        private String username;
+        private String password;
+        private int year;
+        private int month;
+        private int day;
+        private List<Listing> tempList;
+
+        public AutoSchedWorker(String username,
+                               String password, int year, int month, int day) {
+            System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
+            this.username = username;
+            this.password = password;
+            this.year = year;
+            this.month = month;
+            this.day = day;
+            this.tempList = new ArrayList<>();
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            this.options.addArguments("--disable-extensions");
+            driver = new ChromeDriver(options);
+            PortalDriver portalDriver = new PortalDriver(driver);
+            java.util.List<PortalScheduleEventsEvent> portalScheduleEventsEventList =
+                    portalDriver.getScheduleElements(username, password, year, month, day);
+
+            for (PortalScheduleEventsEvent event : portalScheduleEventsEventList) {
+                tempList.add(ListingFactory.createListing(event));
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            for (Listing listing : tempList) {
+                listingDefaultListModel.addElement(listing);
+            }
+        }
     }
 }

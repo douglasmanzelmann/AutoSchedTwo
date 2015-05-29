@@ -15,7 +15,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public abstract class Listing implements Scheduler, Callable<Listing> {
+public abstract class Listing implements Scheduler {
     private DateTime startTime;
     private DateTime endTime;
     private List<String> locations;
