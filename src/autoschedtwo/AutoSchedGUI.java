@@ -156,47 +156,69 @@ public class AutoSchedGUI {
         private ChromeOptions options = new ChromeOptions();
         private WebDriver driver;
         private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        private CompletionService<Listing> completionService = new ExecutorCompletionService<Listing>(executor);
+        private CompletionService<Listing> completionService = new ExecutorCompletionService<>(executor);
+        private List<Listing> portalScheduleEventsEventList;
+        private LinkedBlockingQueue<Listing> listingQueue;
         private String username;
         private String password;
         private int year;
         private int month;
         private int day;
         private int totalFutures;
-        //private List<Future> tempList;
 
         public AutoSchedWorker(String username,
                                String password, int year, int month, int day) {
             System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
+            listingQueue = new LinkedBlockingQueue<>();
             this.username = username;
             this.password = password;
             this.year = year;
             this.month = month;
             this.day = day;
-            //this.tempList = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground() throws Exception {
             this.options.addArguments("--disable-extensions");
             driver = new ChromeDriver(options);
+
+            // producer
+            PortalDriver portalDriver = new PortalDriver(driver, listingQueue);
+            portalDriver.getScheduleElements(username, password, year, month, day);
+
+
+            while (listingQueue.peek() != null) {
+                publish(listingQueue.poll());
+            }
+            // consumer
+
+
+            /* producer
             PortalDriver portalDriver = new PortalDriver(driver);
-            java.util.List<PortalScheduleEventsEvent> portalScheduleEventsEventList =
+            portalScheduleEventsEventList =
                     portalDriver.getScheduleElements(username, password, year, month, day);
             totalFutures = portalScheduleEventsEventList.size();
 
-            for (PortalScheduleEventsEvent event : portalScheduleEventsEventList) {
+            //consumer
+            for (Listing event : portalScheduleEventsEventList) {
                 Callable<Listing> callable = new ListingFactory(event);
                 Future<Listing> future = completionService.submit(callable);
-                //tempList.add(future);
 
-            }
+            }*/
+
             return null;
         }
 
         @Override
+        protected void process(List<Listing> listings) {
+            for (Listing listingItem : listings) {
+                listingDefaultListModel.addElement(listingItem);
+            }
+        }
+
+        @Override
         protected void done() {
-            Future<Listing> completedFuture;
+            /*Future<Listing> completedFuture;
             Listing newListing;
 
             while (totalFutures > 0) {
@@ -207,8 +229,10 @@ public class AutoSchedGUI {
                     listingDefaultListModel.addElement(newListing);
                 } catch (InterruptedException | ExecutionException e) {
                     System.out.println("Listing not created");
-                }
-            }
+                }*/
+            /*for (Listing listing : portalScheduleEventsEventList) {
+                listingDefaultListModel.addElement(listing);
+            }*/
         }
     }
 }

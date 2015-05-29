@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  * Created by dmanzelmann on 5/27/2015.
  */
 public class PortalScheduleEventsEvent {
+    private static int idCounter = 0;
+    private final int id;
     private WebDriver driver;
     private List<WebElement> elements;
     private List<String> listingElements;
@@ -113,6 +115,7 @@ public class PortalScheduleEventsEvent {
     }
 
     public PortalScheduleEventsEvent(WebDriver driver, List<WebElement> elements) {
+        id = idCounter++;
         this.driver = driver;
         this.elements = elements;
         elements = new ArrayList<>();
