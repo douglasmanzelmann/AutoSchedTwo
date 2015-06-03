@@ -14,10 +14,9 @@ import java.util.concurrent.*;
  */
 public class PortalDriver extends Portal {
     private LinkedBlockingQueue<WebElement> webElementsQueue;
-    private LinkedBlockingQueue<Listing> listingQueue;
+    private LinkedBlockingQueue<Future<Listing>> listingQueue;
     private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    private CompletionService<Listing> completionService = new ExecutorCompletionService<Listing>(executor);
-    private int numberOfEvents;
+    private boolean shutDown;
 
     public void getScheduleElements(String username, String password, int year, int month, int day) {
         driver.get("https://rxsecure.umaryland.edu/apps/schedules/view/?type=search&searchtype=resource&id=100&start=" +
@@ -26,11 +25,23 @@ public class PortalDriver extends Portal {
         PortalScheduleEventsWeekPage scheduleEventsWeekPage = loginPage.login(username, password);
         webElementsQueue = scheduleEventsWeekPage.initEventsQueue();
 
+        // doesn't need to be a queue...
+        // this is sequential....
+        // could do a parallel stream
         while (webElementsQueue.peek() != null) {
             Callable<Listing> callable = new PortalListingCallable(webElementsQueue.poll());
-            Future<Listing> future = completionService.submit(callable);
+            Future<Listing> future = executor.submit(callable);
+            listingQueue.add(future);
         }
 
+        /*for (int i = 0; i < size; i ++) {
+            try {
+                listingQueue.put(executor.take().get());
+            } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
+        }*/
+
+        executor.shutdown();
+        shutDown = true;
 
         /*Callable<Listing> callable = loginPage.login(username, password);
         Future<Listing> future = completionService.submit(callable);
@@ -59,9 +70,14 @@ public class PortalDriver extends Portal {
         //return scheduleEventsWeekPage.getScheduleElements();
     }
 
-    public PortalDriver(WebDriver driver, LinkedBlockingQueue<Listing> listingsQueue) {
+    public boolean isShutDown() {
+        return shutDown;
+    }
+
+    public PortalDriver(WebDriver driver, LinkedBlockingQueue<Future<Listing>> listingsQueue) {
         super(driver);
         this.listingQueue = listingsQueue;
+        shutDown = false;
     }
 
     public PortalDriver(WebDriver driver) {

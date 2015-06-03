@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
  * Created by dmanzelmann on 5/26/2015.
  */
 public abstract class Listing implements Scheduler {
+    //private final int ID;
     private DateTime startTime;
     private DateTime endTime;
     private List<String> locations;
@@ -24,6 +25,7 @@ public abstract class Listing implements Scheduler {
     private List<String> faculty;
 
     public Listing(PortalScheduleEventsEvent event) {
+        //ID = event.getId();
         setStartTime(DateUtils.getDateTimeObject(event.getDate(), event.getStartTime()));
         setEndTime(DateUtils.getDateTimeObject(event.getDate(), event.getEndTime()));
         setLocations(event.getLocations());
@@ -31,6 +33,10 @@ public abstract class Listing implements Scheduler {
         setClassPrefix(className.split(" ")[0]);
         setFaculty(event.getFaculty());
     }
+
+   /* public int getID() {
+        return ID;
+    }*/
 
     public DateTime getStartTime() {
         return startTime;
@@ -159,7 +165,7 @@ public abstract class Listing implements Scheduler {
     }
 
     public static void main(String[] args) {
-        String time = "10:00 AM — 10:50 AM";
-        System.out.println(time.indexOf('—'));
+        String time = "10:00 AM ï¿½ 10:50 AM";
+        System.out.println(time.indexOf('ï¿½'));
     }
 }

@@ -37,7 +37,7 @@ public class UsingPortal {
         String password = input.next();
 
         PortalScheduleEventsWeekPage scheduleEventsWeekPage = loginPage.login(username, password);
-        Iterator<WebElement> listIterator = scheduleEventsWeekPage.iterator();
+        //Iterator<WebElement> listIterator = scheduleEventsWeekPage.iterator();
 
         /*while (listIterator.hasNext()) {
             System.out.println(listIterator.next());

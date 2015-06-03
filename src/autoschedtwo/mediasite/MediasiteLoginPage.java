@@ -37,7 +37,7 @@ public class MediasiteLoginPage extends Mediasite {
     }
 
     public static void main(String[] args) {
-        System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\test\\Desktop\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
 
         driver.get("https://mediasite.umaryland.edu/Mediasite/Login?ReturnUrl=%2fmediasite%2fmanage");

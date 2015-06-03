@@ -156,9 +156,7 @@ public class AutoSchedGUI {
         private ChromeOptions options = new ChromeOptions();
         private WebDriver driver;
         private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        private CompletionService<Listing> completionService = new ExecutorCompletionService<>(executor);
-        private List<Listing> portalScheduleEventsEventList;
-        private LinkedBlockingQueue<Listing> listingQueue;
+        private LinkedBlockingQueue<Future<Listing>> listingQueue;
         private String username;
         private String password;
         private int year;
@@ -168,7 +166,7 @@ public class AutoSchedGUI {
 
         public AutoSchedWorker(String username,
                                String password, int year, int month, int day) {
-            System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\test\\Desktop\\chromedriver.exe");
             listingQueue = new LinkedBlockingQueue<>();
             this.username = username;
             this.password = password;
@@ -182,57 +180,36 @@ public class AutoSchedGUI {
             this.options.addArguments("--disable-extensions");
             driver = new ChromeDriver(options);
 
-            // producer
             PortalDriver portalDriver = new PortalDriver(driver, listingQueue);
             portalDriver.getScheduleElements(username, password, year, month, day);
+            //System.out.println("out of portal driver");
 
-
-            while (listingQueue.peek() != null) {
-                publish(listingQueue.poll());
+            //System.out.println("listingQueue empty? " + listingQueue.size());
+            while (!listingQueue.isEmpty()) {
+                Future<Listing> temp = listingQueue.poll();
+                //System.out.println("listingQueue size? " + listingQueue.size());
+                //if (temp.isDone()) {
+                    //System.out.println("publish");
+                    publish(temp.get());
+                    //System.out.println("what is happening");
+                //}
+                //else {
+                    //System.out.println("delay");
+                   // listingQueue.put(temp);
+                //}
             }
-            // consumer
 
-
-            /* producer
-            PortalDriver portalDriver = new PortalDriver(driver);
-            portalScheduleEventsEventList =
-                    portalDriver.getScheduleElements(username, password, year, month, day);
-            totalFutures = portalScheduleEventsEventList.size();
-
-            //consumer
-            for (Listing event : portalScheduleEventsEventList) {
-                Callable<Listing> callable = new ListingFactory(event);
-                Future<Listing> future = completionService.submit(callable);
-
-            }*/
-
+            //System.out.println("at the end of doinbackgrond");
             return null;
         }
 
         @Override
         protected void process(List<Listing> listings) {
             for (Listing listingItem : listings) {
+                //System.out.println(listingItem);
                 listingDefaultListModel.addElement(listingItem);
+                //listingDefaultListModel.add(listingItem.getID(), listingItem);
             }
-        }
-
-        @Override
-        protected void done() {
-            /*Future<Listing> completedFuture;
-            Listing newListing;
-
-            while (totalFutures > 0) {
-                try {
-                    completedFuture = completionService.take();
-                    totalFutures--;
-                    newListing = completedFuture.get();
-                    listingDefaultListModel.addElement(newListing);
-                } catch (InterruptedException | ExecutionException e) {
-                    System.out.println("Listing not created");
-                }*/
-            /*for (Listing listing : portalScheduleEventsEventList) {
-                listingDefaultListModel.addElement(listing);
-            }*/
         }
     }
 }

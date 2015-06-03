@@ -1,10 +1,13 @@
 package autoschedtwo.portal;
 
 import autoschedtwo.listing.Listing;
+import autoschedtwo.listing.ListingFactory;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import java.util.concurrent.Callable;
 
@@ -17,14 +20,13 @@ public class PortalListingCallable implements Callable<Listing>  {
     private WebElement event;
 
     public PortalListingCallable(WebElement event) {
-        System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
-        options = new ChromeOptions();
-        this.options.addArguments("--disable-extensions");
-        driver = new ChromeDriver(options);
+        driver = new HtmlUnitDriver();
         this.event = event;
     }
 
     public Listing call() {
-
+        Listing newListing = ListingFactory.createListing(
+                new PortalScheduleEventsEvent(driver, event.findElements(By.tagName("td"))).parse());
+        return newListing;
     }
 }

@@ -21,32 +21,11 @@ import java.util.regex.Pattern;
 /**
  * Created by dmanzelmann on 5/22/2015.
  */
-public class PortalScheduleEventsWeekPage extends Portal implements Callable<Listing> {
+public class PortalScheduleEventsWeekPage extends Portal {
     @FindBy(how = How.ID, using = "agenda")
     private static WebElement agenda;
 
     private static LinkedBlockingQueue<WebElement> eventItems;
-
-    private class ListIterator implements Iterator<WebElement> {
-        private int index = 0;
-        List<WebElement> agendaItems = agenda.findElements(By.tagName("tr"));
-
-        public boolean hasNext() {
-            return index < agendaItems.size();
-        }
-
-        public void remove() { throw new UnsupportedOperationException(); }
-
-        public WebElement next() {
-            if (!hasNext()) throw new NoSuchElementException();
-            WebElement webElement = agendaItems.get(index++);
-            return webElement;
-        }
-    }
-
-    public Iterator<WebElement> iterator() {
-        return new ListIterator();
-    }
 
     /*public List<Listing> getScheduleElements() {
         //List<PortalScheduleEventsEvent> eventsList = new ArrayList<>();
@@ -75,18 +54,6 @@ public class PortalScheduleEventsWeekPage extends Portal implements Callable<Lis
         eventItems = new LinkedBlockingQueue<>(agenda.findElements((By.tagName("tr"))));
 
         return eventItems;
-    }
-
-    public Listing call() {
-        Listing newListing = ListingFactory.createListing(
-                new PortalScheduleEventsEvent(driver, eventItems.poll().findElements(By.tagName("td"))).parse());
-        System.out.println("new listing");
-
-        return newListing;
-    }
-
-    public PortalScheduleEventsWeekPage() {
-
     }
 
     public PortalScheduleEventsWeekPage(WebDriver driver) {

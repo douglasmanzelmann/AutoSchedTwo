@@ -12,7 +12,7 @@ public abstract class Portal {
     WebDriver driver;
 
     public Portal() {
-        System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\test\\Desktop\\chromedriver.exe");
         options = new ChromeOptions();
         options.addArguments("--disable-extensions");
         driver = new ChromeDriver(options);

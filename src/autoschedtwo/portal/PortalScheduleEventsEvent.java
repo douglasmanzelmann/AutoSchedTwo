@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +20,8 @@ import java.util.regex.Pattern;
  * Created by dmanzelmann on 5/27/2015.
  */
 public class PortalScheduleEventsEvent {
-    private static int idCounter = 0;
-    private final int id;
+    //private static AtomicInteger idCounter;
+    //private int id;
     private WebDriver driver;
     private List<WebElement> elements;
     private List<String> listingElements;
@@ -31,6 +32,14 @@ public class PortalScheduleEventsEvent {
     private String classDetails;
     private String activity;
     private List<String> faculty;
+
+    /*private void setId() {
+      id = idCounter.getAndIncrement();
+    }
+
+    public int getId() {
+        return id;
+    }*/
 
 
     private void setDate(String date) {
@@ -95,7 +104,6 @@ public class PortalScheduleEventsEvent {
 
     public PortalScheduleEventsEvent parse() {
         Iterator<WebElement> iterator = elements.iterator();
-
         setDate(iterator.next().getAttribute("title")); // i.e., Apr 19
         setTimes(iterator.next().getText()); // i.e., 10:00 AM - 10:50 AM
         setLocations(Arrays.asList(iterator.next().getText().split("\n")));
@@ -115,10 +123,9 @@ public class PortalScheduleEventsEvent {
     }
 
     public PortalScheduleEventsEvent(WebDriver driver, List<WebElement> elements) {
-        id = idCounter++;
         this.driver = driver;
         this.elements = elements;
-        elements = new ArrayList<>();
+        //setId();
     }
 
     public static void main(String[] args) {
@@ -131,13 +138,13 @@ public class PortalScheduleEventsEvent {
 
         String pattern = "(\\d\\d:\\d\\d [AP]M)";
         Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher("10:00 AM — 10:50 AM");
+        Matcher m = r.matcher("10:00 AM ï¿½ 10:50 AM");
         while (m.find()) {
             System.out.println("found value: " + m.group(0));
         }
 
-        //String SPLIT = " — ";
-        //String time = "10:00 AM — 10:50 AM";
+        //String SPLIT = " ï¿½ ";
+        //String time = "10:00 AM ï¿½ 10:50 AM";
         //System.out.println("contains split: " + time.contains(SPLIT));
     }
 }
