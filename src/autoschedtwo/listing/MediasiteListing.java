@@ -43,7 +43,7 @@ public class MediasiteListing extends Listing {
         this.login = login;
     }
 
-    public void schedule(String username, String password) {
+    public MediasiteListing schedule(String username, String password) {
         driver = new ChromeDriver();
         factory = new AjaxElementLocatorFactory(driver, 30);
         driver.get("https://mediasite.umaryland.edu/Mediasite/Login?ReturnUrl=%2fmediasite%2fmanage");
@@ -51,11 +51,14 @@ public class MediasiteListing extends Listing {
         MediasiteLoginPage loginPage = PageFactory.initElements(driver, MediasiteLoginPage.class);
         MediasiteHomePage homePage = loginPage.login(username, password);
         PageFactory.initElements(factory, homePage);
-        homePage.navigateToSchoolOfPharmacy();
-        homePage.navigateToPharmD();
+        //homePage.navigateToSchoolOfPharmacy();
+        //homePage.navigateToPharmD();
+        homePage.navigateToTraing();
+        homePage.navigateToTesting();
 
-
-        MediasiteFolderPage folderPage = homePage.navigateToFolder(getSemesterFolder(getStartTime(), getClassPrefix()));
+        //MediasiteFolderPage folderPage = homePage.navigateToFolder(getSemesterFolder(getStartTime(), getClassPrefix()));
+        //PageFactory.initElements(factory, folderPage);
+        MediasiteFolderPage folderPage = homePage.navigateToNowhere();
         PageFactory.initElements(factory, folderPage);
 
         MediasiteTemplatePage templatePage = folderPage.addNewPresentation();
@@ -70,6 +73,7 @@ public class MediasiteListing extends Listing {
                         getTimeOfDay(getStartTime()), getFacultyAsQueue());
 
         scheduled = true;
+        return this;
     }
 
     public String getDescription() {

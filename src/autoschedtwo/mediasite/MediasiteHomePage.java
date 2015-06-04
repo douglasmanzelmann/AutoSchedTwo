@@ -40,6 +40,10 @@ public class MediasiteHomePage extends Mediasite {
         testing.click();
     }
 
+    public MediasiteFolderPage navigateToNowhere() {
+        return new MediasiteFolderPage(driver);
+    }
+
     public MediasiteFolderPage navigateToFolder(String folder) {
         WebDriverWait wait = new WebDriverWait(driver, 30);
         wait.until(ExpectedConditions.elementToBeClickable(By.partialLinkText(folder)));

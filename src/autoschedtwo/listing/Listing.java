@@ -23,6 +23,7 @@ public abstract class Listing implements Scheduler {
     private String className;
     private String classPrefix;
     private List<String> faculty;
+    private boolean canBeScheduled;
 
     public Listing(PortalScheduleEventsEvent event) {
         //ID = event.getId();
@@ -32,6 +33,7 @@ public abstract class Listing implements Scheduler {
         setClassName(event.getClassDetails().split(";")[0]);
         setClassPrefix(className.split(" ")[0]);
         setFaculty(event.getFaculty());
+        canBeScheduled = false;
     }
 
    /* public int getID() {
@@ -158,6 +160,10 @@ public abstract class Listing implements Scheduler {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public boolean isCanBeScheduled() {
+        return canBeScheduled;
     }
 
     public String toString() {

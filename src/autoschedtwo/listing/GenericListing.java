@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public class GenericListing extends Listing {
-    public GenericListing(PortalScheduleEventsEvent event) {
+public class GenericListing  {
+    /*public GenericListing(PortalScheduleEventsEvent event) {
         super(event);
     }
 
-    public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
+    public Listing schedule(String username, String password) {
         System.out.println("Schedule generic listing");
-    }
+    } */
 }

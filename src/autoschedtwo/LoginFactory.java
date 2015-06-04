@@ -16,13 +16,22 @@ public class LoginFactory {
         this.tmsLogin = tmsLogin;
     }
 
+    public final Login getLogin(Listing listing) {
+        if (listing instanceof MediasiteListing)
+            return mediasiteLogin;
+        else if (listing instanceof TMSListing)
+            return tmsLogin;
+
+        return null;
+    }
+
     public final String getUsername(Listing listing) {
         if (listing instanceof MediasiteListing)
             return mediasiteLogin.getUsername();
         else if (listing instanceof TMSListing)
             return tmsLogin.getUsername();
 
-        return "";
+        return null;
     }
 
     public final String getPassword(Listing listing) {
@@ -31,7 +40,7 @@ public class LoginFactory {
         else if (listing instanceof TMSListing)
             return tmsLogin.getPassword();
 
-        return "";
+        return null;
     }
 
     public final String getPortalUsername() {

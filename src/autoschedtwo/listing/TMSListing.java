@@ -53,7 +53,7 @@ public class TMSListing extends Listing implements Callable<Listing> {
         this.login = login;
     }
 
-    public void schedule(String username, String password) {
+    public Listing schedule(String username, String password) {
         driver = new ChromeDriver();
         String templateUserName = username.substring(1);
 
@@ -74,6 +74,8 @@ public class TMSListing extends Listing implements Callable<Listing> {
         } catch (CodecInUseException e) { e.printStackTrace(); }
 
         scheduled = true;
+
+        return this;
     }
 
     public String toString() {

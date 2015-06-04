@@ -21,10 +21,11 @@ public class ListingFactory implements Callable<Listing> {
             return new MediasiteListing(event);
         else if (event.getActivity().equals("Videoconference"))
             return new TMSListing(event);
-        else if (event.getActivity().equals("Pre-record Session"))
+        /*else if (event.getActivity().equals("Pre-record Session"))
             return new PreRecordListing(event);
         else
-            return new GenericListing(event);
+            return new GenericListing(event);*/
+        return null;
     }
 
     public static Listing createListing(PortalScheduleEventsEvent event) {
@@ -32,9 +33,10 @@ public class ListingFactory implements Callable<Listing> {
             return new MediasiteListing(event);
         else if (event.getActivity().equals("Videoconference"))
             return new TMSListing(event);
-        else if (event.getActivity().equals("Pre-record Session"))
+        /*else if (event.getActivity().equals("Pre-record Session"))
             return new PreRecordListing(event);
         else
-            return new GenericListing(event);
+            return new GenericListing(event);*/
+        return null;
     }
 }

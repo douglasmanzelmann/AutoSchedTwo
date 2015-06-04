@@ -1,6 +1,9 @@
 package autoschedtwo;
 
 import autoschedtwo.listing.Listing;
+import autoschedtwo.listing.ListingCallable;
+import autoschedtwo.listing.MediasiteListing;
+import autoschedtwo.listing.TMSListing;
 import autoschedtwo.portal.PortalDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -43,8 +46,8 @@ public class AutoSchedGUI {
 
     // ScrollPanel for list
     private JScrollPane listScrollPane = new JScrollPane();
-    private DefaultListModel<Listing> listingDefaultListModel = new DefaultListModel<>();
-    private JList<Listing> listingJList = new JList<>(listingDefaultListModel);
+    private AutoSchedListModel listingListModel = new AutoSchedListModel();
+    private JList<Listing> listingJList = new JList<>(listingListModel);
 
     // Main panel
     private JPanel contentPanel = new JPanel(new BorderLayout());
@@ -139,6 +142,12 @@ public class AutoSchedGUI {
                 year, month, day);
         readSchedWorker.execute();
 
+        while (!readSchedWorker.isDone()) { }
+
+        /*ScheduleActivityWorker scheduleActivityWorker =
+                new ScheduleActivityWorker(portalLogin,tmsLogin);
+        scheduleActivityWorker.execute();*/
+
 
     }
 
@@ -192,12 +201,48 @@ public class AutoSchedGUI {
         @Override
         protected void process(List<Listing> listings) {
             for (Listing listingItem : listings) {
-                listingDefaultListModel.addElement(listingItem);
+                listingListModel.addElement(listingItem);
             }
         }
     }
 
     private class ScheduleActivityWorker extends SwingWorker<Void, Listing> {
+        private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        private ExecutorCompletionService<Listing> completionService = new ExecutorCompletionService<Listing>(executor);
+        private LoginFactory loginFactory;
+        private int numberOfTasks;
 
+        public ScheduleActivityWorker(Login mediasiteLogin, Login tmsLogin) {
+            loginFactory = new LoginFactory(mediasiteLogin, tmsLogin);
+            numberOfTasks = 0;
+            System.out.println("in schedactivity constructor");
+        }
+
+        @Override
+        protected Void doInBackground() {
+            for (Listing listing : listingListModel) {
+                if (listing instanceof MediasiteListing || listing instanceof TMSListing) {
+                    Callable<Listing> callable = new ListingCallable(listing, loginFactory.getLogin(listing));
+                    completionService.submit(callable);
+                    numberOfTasks++;
+                }
+            }
+
+            for (int i = 0; i < numberOfTasks; i++) {
+                try {
+                    Listing listing = completionService.take().get();
+                    publish(listing);
+                }  catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void process(List<Listing> listings) {
+            for (Listing listing : listings) {
+                listingListModel.updateElement(listing);
+            }
+        }
     }
 }
