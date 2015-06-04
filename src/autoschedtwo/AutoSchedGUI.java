@@ -1,9 +1,7 @@
 package autoschedtwo;
 
 import autoschedtwo.listing.Listing;
-import autoschedtwo.listing.ListingFactory;
 import autoschedtwo.portal.PortalDriver;
-import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,7 +11,6 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -128,19 +125,21 @@ public class AutoSchedGUI {
     }
 
     private void populateList() {
-        String username = portalUserNameField.getText();
-        String password = new String(portalPasswordField.getPassword());
+        String portalUsername = portalUserNameField.getText();
+        String portalPassword = new String(portalPasswordField.getPassword());
+        Login portalLogin = new Login(portalUsername, portalPassword);
+        String tmsUsername = tmsUserNameField.getText();
+        String tmsPassword = new String(tmsPasswordField.getPassword());
+        Login tmsLogin = new Login(tmsUsername, tmsPassword);
         int year = Integer.parseInt(schedYearText.getText());
         int month = Integer.parseInt(schedMonthText.getText());
         int day = Integer.parseInt(schedDayText.getText());
 
-        AutoSchedWorker autoSchedWorker = new AutoSchedWorker(username, password,
+        ReadSchedWorker readSchedWorker = new ReadSchedWorker(portalLogin, tmsLogin,
                 year, month, day);
-        autoSchedWorker.execute();
+        readSchedWorker.execute();
 
-        //try {
-        //    autoSchedWorker.get();
-        //} catch (InterruptedException | ExecutionException ex) { ex.printStackTrace(); }
+
     }
 
     public static void main(String[] args) {
@@ -152,24 +151,20 @@ public class AutoSchedGUI {
         });
     }
 
-    private class AutoSchedWorker extends SwingWorker<Void, Listing> {
+    private class ReadSchedWorker extends SwingWorker<Void, Listing> {
         private ChromeOptions options = new ChromeOptions();
         private WebDriver driver;
-        private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         private LinkedBlockingQueue<Future<Listing>> listingQueue;
-        private String username;
-        private String password;
+        private LoginFactory loginFactory;
         private int year;
         private int month;
         private int day;
-        private int totalFutures;
 
-        public AutoSchedWorker(String username,
-                               String password, int year, int month, int day) {
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\test\\Desktop\\chromedriver.exe");
+        public ReadSchedWorker(Login mediasiteLogin, Login tmsLogin,
+                               int year, int month, int day) {
+            System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
             listingQueue = new LinkedBlockingQueue<>();
-            this.username = username;
-            this.password = password;
+            loginFactory = new LoginFactory(mediasiteLogin, tmsLogin);
             this.year = year;
             this.month = month;
             this.day = day;
@@ -180,36 +175,29 @@ public class AutoSchedGUI {
             this.options.addArguments("--disable-extensions");
             driver = new ChromeDriver(options);
 
+            String portalUsername = loginFactory.getPortalUsername();
+            String portalPassword = loginFactory.getPortalPassword();
             PortalDriver portalDriver = new PortalDriver(driver, listingQueue);
-            portalDriver.getScheduleElements(username, password, year, month, day);
-            //System.out.println("out of portal driver");
+            portalDriver.getScheduleElements(portalUsername, portalPassword, year, month, day);
 
-            //System.out.println("listingQueue empty? " + listingQueue.size());
             while (!listingQueue.isEmpty()) {
-                Future<Listing> temp = listingQueue.poll();
-                //System.out.println("listingQueue size? " + listingQueue.size());
-                //if (temp.isDone()) {
-                    //System.out.println("publish");
-                    publish(temp.get());
-                    //System.out.println("what is happening");
-                //}
-                //else {
-                    //System.out.println("delay");
-                   // listingQueue.put(temp);
-                //}
-            }
+                Future<Listing> futureListing = listingQueue.poll();
+                Listing listing = futureListing.get();
+                publish(listing);
 
-            //System.out.println("at the end of doinbackgrond");
+            }
             return null;
         }
 
         @Override
         protected void process(List<Listing> listings) {
             for (Listing listingItem : listings) {
-                //System.out.println(listingItem);
                 listingDefaultListModel.addElement(listingItem);
-                //listingDefaultListModel.add(listingItem.getID(), listingItem);
             }
         }
+    }
+
+    private class ScheduleActivityWorker extends SwingWorker<Void, Listing> {
+
     }
 }

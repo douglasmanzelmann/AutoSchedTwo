@@ -1,5 +1,6 @@
 package autoschedtwo.listing;
 
+import autoschedtwo.Login;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import autoschedtwo.tms.*;
 import org.openqa.selenium.WebDriver;
@@ -7,14 +8,17 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public class TMSListing extends Listing {
+public class TMSListing extends Listing implements Callable<Listing> {
     private WebDriver driver;
     private String baltimoreLocation;
     private String sgLocation;
+    private Login login;
+    private boolean scheduled;
 
     public TMSListing(PortalScheduleEventsEvent event) {
         super(event);
@@ -39,14 +43,23 @@ public class TMSListing extends Listing {
         this.baltimoreLocation = baltimoreLocation;
     }
 
+    public Listing call() {
+        schedule(login.getUsername(), login.getPassword());
 
-    public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
+        return this;
+    }
+
+    public void setLogin(Login login) {
+        this.login = login;
+    }
+
+    public void schedule(String username, String password) {
         driver = new ChromeDriver();
         String templateUserName = username.substring(1);
 
         TMSLoginPage loginPage = new TMSLoginPage(driver);
 
-        TMSHomePage homePage = loginPage.login(tmsUsername, tmsPassword);
+        TMSHomePage homePage = loginPage.login(username, password);
 
         // actually need to try a different codec.
         try {
@@ -60,5 +73,10 @@ public class TMSListing extends Listing {
                             durationInMinutes(getStartTime(), getEndTime()));
         } catch (CodecInUseException e) { e.printStackTrace(); }
 
+        scheduled = true;
+    }
+
+    public String toString() {
+        return "Scheduled: " + scheduled + " " + super.toString();
     }
 }

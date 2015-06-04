@@ -19,9 +19,4 @@ public class Login {
     public String getPassword() {
         return password;
     }
-
-    @Override
-    public Login clone() {
-        return new Login(username, password);
-    }
 }

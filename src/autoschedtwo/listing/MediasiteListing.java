@@ -1,12 +1,10 @@
 package autoschedtwo.listing;
 
+import autoschedtwo.Login;
 import autoschedtwo.mediasite.*;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
@@ -16,6 +14,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.Callable;
 
 /**
  * Created by dmanzelmann on 5/26/2015.
@@ -23,15 +22,28 @@ import java.util.Queue;
 public class MediasiteListing extends Listing {
     private WebDriver driver;
     private ElementLocatorFactory factory;
+    private boolean scheduled;
+    private Login login;
 
     private String description;
 
     public MediasiteListing(PortalScheduleEventsEvent event) {
         super(event);
         setDescription(event.getClassDetails().split(";")[2].trim());
+        scheduled = false;
     }
 
-    public void schedule(String username, String password, String tmsUsername, String tmsPassword) {
+    public Listing call() {
+        schedule(login.getUsername(), login.getPassword());
+
+        return this;
+    }
+
+    public void setLogin(Login login) {
+        this.login = login;
+    }
+
+    public void schedule(String username, String password) {
         driver = new ChromeDriver();
         factory = new AjaxElementLocatorFactory(driver, 30);
         driver.get("https://mediasite.umaryland.edu/Mediasite/Login?ReturnUrl=%2fmediasite%2fmanage");
@@ -56,6 +68,8 @@ public class MediasiteListing extends Listing {
                 newPresentationPage.createNewMediasitePresentation(getClassName() + getDateInMDYFormat(getStartTime()),
                         getDescription(), getDateInMDYFormat(getStartTime()), getHour(getStartTime()), getMinute(getStartTime()),
                         getTimeOfDay(getStartTime()), getFacultyAsQueue());
+
+        scheduled = true;
     }
 
     public String getDescription() {
@@ -86,6 +100,10 @@ public class MediasiteListing extends Listing {
         String yearAbbreviation = Integer.toString(date.getYear() % 100);
 
         return semesterAbbreviation + yearAbbreviation + classPrefix;
+    }
+
+    public String toString() {
+        return "Scheduled: " + scheduled + " " + super.toString();
     }
 
     public static void main(String[] args) {

@@ -34,40 +34,8 @@ public class PortalDriver extends Portal {
             listingQueue.add(future);
         }
 
-        /*for (int i = 0; i < size; i ++) {
-            try {
-                listingQueue.put(executor.take().get());
-            } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
-        }*/
-
         executor.shutdown();
         shutDown = true;
-
-        /*Callable<Listing> callable = loginPage.login(username, password);
-        Future<Listing> future = completionService.submit(callable);
-
-
-        for (int i = 1; i < PortalScheduleEventsWeekPage.initEventsQueue(); i++) {
-            callable = loginPage.login(username, password);
-            future = completionService.submit(callable);
-            System.out.println("added a future");
-        }
-
-
-        Future<Listing> completedFuture;
-        Listing newListing;
-        while (numberOfEvents > 0) {
-            try {
-                completedFuture = completionService.take();
-                numberOfEvents--;
-                newListing = completedFuture.get();
-                listingQueue.offer(newListing);
-                System.out.println(newListing);
-            } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
-        }  */
-
-
-        //return scheduleEventsWeekPage.getScheduleElements();
     }
 
     public boolean isShutDown() {
