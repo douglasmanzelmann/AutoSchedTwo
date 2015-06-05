@@ -3,6 +3,7 @@ package autoschedtwo.portal;
 import autoschedtwo.listing.Listing;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.support.PageFactory;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class PortalDriver extends Portal {
     private LinkedBlockingQueue<WebElement> webElementsQueue;
     private LinkedBlockingQueue<Future<Listing>> listingQueue;
     private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    //private ExecutorService executor = Executors.newFixedThreadPool(6);
     private boolean shutDown;
 
     public void getScheduleElements(String username, String password, int year, int month, int day) {
@@ -30,21 +32,31 @@ public class PortalDriver extends Portal {
         // could do a parallel stream
         while (webElementsQueue.peek() != null) {
             Callable<Listing> callable = new PortalListingCallable(webElementsQueue.poll());
-            Future<Listing> future = executor.submit(callable);
-            listingQueue.add(future);
+            //Future<Listing> future = executor.submit(callable);
+            Future<Listing> future = executor.submit(new Callable<Listing>() {
+                @Override
+                public Listing call() throws Exception {
+                    try {
+                        return callable.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }
+            });
+            listingQueue.offer(future);
         }
 
         executor.shutdown();
-        shutDown = true;
     }
 
     public boolean isShutDown() {
         return shutDown;
     }
 
-    public PortalDriver(WebDriver driver, LinkedBlockingQueue<Future<Listing>> listingsQueue) {
+    public PortalDriver(WebDriver driver, LinkedBlockingQueue listingQueue) {
         super(driver);
-        this.listingQueue = listingsQueue;
+        this.listingQueue = listingQueue;
         shutDown = false;
     }
 

@@ -23,32 +23,10 @@ import java.util.regex.Pattern;
  */
 public class PortalScheduleEventsWeekPage extends Portal {
     @FindBy(how = How.ID, using = "agenda")
-    private static WebElement agenda;
+    WebElement agenda;
 
     private static LinkedBlockingQueue<WebElement> eventItems;
 
-    /*public List<Listing> getScheduleElements() {
-        //List<PortalScheduleEventsEvent> eventsList = new ArrayList<>();
-        List<Listing> newListings = new ArrayList<>();
-        List<WebElement> agendaItems = agenda.findElements(By.tagName("tr"));
-
-        int counter = 0;
-
-        for (WebElement row : agendaItems) {
-            newListings.add(ListingFactory.createListing(
-                    new PortalScheduleEventsEvent(driver,
-                            row.findElements(By.tagName("td"))).parse()));
-        }
-        /*for (WebElement row : agendaItems) {
-            eventsList.add(new PortalScheduleEventsEvent(driver,
-                    row.findElements(By.tagName("td"))).parse());
-            System.out.println("new event: " + counter++);
-
-        }
-
-        //return eventsList;
-        return newListings;
-    }*/
 
     public LinkedBlockingQueue<WebElement> initEventsQueue() {
         eventItems = new LinkedBlockingQueue<>(agenda.findElements((By.tagName("tr"))));

@@ -1,6 +1,7 @@
 package autoschedtwo.listing;
 
 import autoschedtwo.Login;
+import autoschedtwo.Scheduler;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import autoschedtwo.tms.*;
 import org.openqa.selenium.WebDriver;
@@ -13,7 +14,7 @@ import java.util.concurrent.Callable;
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public class TMSListing extends Listing implements Callable<Listing> {
+public class TMSListing extends Listing {
     private WebDriver driver;
     private String baltimoreLocation;
     private String sgLocation;
@@ -23,8 +24,15 @@ public class TMSListing extends Listing implements Callable<Listing> {
     public TMSListing(PortalScheduleEventsEvent event) {
         super(event);
 
-        setBaltimoreLocation(getLocations().get(0));
-        setSgLocation(getLocations().get(1).replace("SGIII", "USG"));
+        if (getLocations().size() > 1) {
+            baltimoreLocation = getLocations().get(0);
+            sgLocation = getLocations().get(1).replace("SGIII", "USG");
+        }
+        else {
+            // need to set a boolean, notAbleToSchedule
+            baltimoreLocation = "UNKOWN";
+            sgLocation = "UNKNOWN";
+        }
     }
 
     public String getSgLocation() {
@@ -43,7 +51,7 @@ public class TMSListing extends Listing implements Callable<Listing> {
         this.baltimoreLocation = baltimoreLocation;
     }
 
-    public Listing call() {
+    /*public Listing call() {
         schedule(login.getUsername(), login.getPassword());
 
         return this;
@@ -51,7 +59,7 @@ public class TMSListing extends Listing implements Callable<Listing> {
 
     public void setLogin(Login login) {
         this.login = login;
-    }
+    }*/
 
     public Listing schedule(String username, String password) {
         driver = new ChromeDriver();
@@ -78,7 +86,7 @@ public class TMSListing extends Listing implements Callable<Listing> {
         return this;
     }
 
-    public String toString() {
+    /*public String toString() {
         return "Scheduled: " + scheduled + " " + super.toString();
-    }
+    }*/
 }

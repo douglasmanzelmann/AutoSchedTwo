@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
  * Created by dmanzelmann on 5/29/2015.
  */
 public class PortalListingCallable implements Callable<Listing>  {
-    private ChromeOptions options;
     private WebDriver driver;
     private WebElement event;
 
@@ -25,8 +24,13 @@ public class PortalListingCallable implements Callable<Listing>  {
     }
 
     public Listing call() {
+        //System.out.println("in PortalLisingCallable");
+        /*Listing newListing = ListingFactory.createListing(
+                 new PortalScheduleEventsEvent(driver, event.findElements(By.tagName("td"))).parse());*/
         Listing newListing = ListingFactory.createListing(
-                new PortalScheduleEventsEvent(driver, event.findElements(By.tagName("td"))).parse());
+                new PortalScheduleEventsEvent(new HtmlUnitDriver(), event.findElements(By.tagName("td"))).parse());
+
+        driver.close();
         return newListing;
     }
 }

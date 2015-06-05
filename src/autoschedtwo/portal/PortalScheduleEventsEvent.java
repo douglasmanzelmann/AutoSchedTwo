@@ -20,8 +20,6 @@ import java.util.regex.Pattern;
  * Created by dmanzelmann on 5/27/2015.
  */
 public class PortalScheduleEventsEvent {
-    //private static AtomicInteger idCounter;
-    //private int id;
     private WebDriver driver;
     private List<WebElement> elements;
     private List<String> listingElements;
@@ -32,15 +30,6 @@ public class PortalScheduleEventsEvent {
     private String classDetails;
     private String activity;
     private List<String> faculty;
-
-    /*private void setId() {
-      id = idCounter.getAndIncrement();
-    }
-
-    public int getId() {
-        return id;
-    }*/
-
 
     private void setDate(String date) {
         this.date = date.trim();
@@ -107,6 +96,7 @@ public class PortalScheduleEventsEvent {
         setDate(iterator.next().getAttribute("title")); // i.e., Apr 19
         setTimes(iterator.next().getText()); // i.e., 10:00 AM - 10:50 AM
         setLocations(Arrays.asList(iterator.next().getText().split("\n")));
+        //String tempDetails = StringUtils.join(iterator.next().getText().trim().split("\n"), ";");
         setClassDetails(StringUtils.join(iterator.next().getText().trim().split("\n"), ";"));
 
         if (classDetails.contains("Recorded in Mediasite"))

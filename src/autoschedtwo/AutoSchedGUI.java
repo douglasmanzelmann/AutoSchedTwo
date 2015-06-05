@@ -142,7 +142,7 @@ public class AutoSchedGUI {
                 year, month, day);
         readSchedWorker.execute();
 
-        while (!readSchedWorker.isDone()) { }
+        //while (!readSchedWorker.isDone()) { }
 
         /*ScheduleActivityWorker scheduleActivityWorker =
                 new ScheduleActivityWorker(portalLogin,tmsLogin);
@@ -190,10 +190,14 @@ public class AutoSchedGUI {
             portalDriver.getScheduleElements(portalUsername, portalPassword, year, month, day);
 
             while (!listingQueue.isEmpty()) {
-                Future<Listing> futureListing = listingQueue.poll();
+                System.out.println("beginning");
+                Future<Listing> futureListing = listingQueue.take();
+                System.out.println("future.isDone before get(): " + futureListing.isDone());
                 Listing listing = futureListing.get();
+                System.out.println("future.isDone after get(): " + futureListing.isDone());
+                System.out.println("before publish");
                 publish(listing);
-
+                System.out.println("after publish");
             }
             return null;
         }

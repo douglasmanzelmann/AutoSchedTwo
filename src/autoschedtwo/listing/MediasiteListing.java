@@ -1,6 +1,7 @@
 package autoschedtwo.listing;
 
 import autoschedtwo.Login;
+import autoschedtwo.Scheduler;
 import autoschedtwo.mediasite.*;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.joda.time.DateTime;
@@ -19,25 +20,25 @@ import java.util.concurrent.Callable;
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public class MediasiteListing extends Listing {
+public class MediasiteListing extends Listing  {
     private WebDriver driver;
     private ElementLocatorFactory factory;
     private boolean scheduled;
     private Login login;
 
-    private String description;
+    private final String description;
 
     public MediasiteListing(PortalScheduleEventsEvent event) {
         super(event);
-        setDescription(event.getClassDetails().split(";")[2].trim());
+        description = event.getClassDetails().split(";")[2].trim();
         scheduled = false;
     }
 
-    public Listing call() {
+    /*public Listing call() {
         schedule(login.getUsername(), login.getPassword());
 
         return this;
-    }
+    }*/
 
     public void setLogin(Login login) {
         this.login = login;
@@ -80,11 +81,6 @@ public class MediasiteListing extends Listing {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
     private Queue<String> getFacultyAsQueue() {
         Queue<String> facultyQueue = new LinkedList<>();
 
@@ -106,9 +102,9 @@ public class MediasiteListing extends Listing {
         return semesterAbbreviation + yearAbbreviation + classPrefix;
     }
 
-    public String toString() {
+    /*public String toString() {
         return "Scheduled: " + scheduled + " " + super.toString();
-    }
+    }*/
 
     public static void main(String[] args) {
         String temp = "PHAR535 Pharmaceutics Lectures \n" +
