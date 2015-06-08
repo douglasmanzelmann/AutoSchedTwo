@@ -4,6 +4,7 @@ import autoschedtwo.DateUtils;
 import autoschedtwo.Scheduler;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xpath.operations.Bool;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -23,7 +24,11 @@ public abstract class Listing implements Scheduler {
     private final String className;
     private final String classPrefix;
     private final List<String> faculty;
-    //private boolean canBeScheduled;
+    private String activity;
+    private boolean needsToBeScheduled;
+    private boolean canBeScheduled;
+    private boolean isScheduled;
+    private String status;
 
     public Listing(PortalScheduleEventsEvent event) {
         this.startTime = DateUtils.getDateTimeObject(event.getDate(), event.getStartTime());
@@ -32,14 +37,16 @@ public abstract class Listing implements Scheduler {
         //setEndTime(DateUtils.getDateTimeObject(event.getDate(), event.getEndTime()));
         this.locations = event.getLocations();
         //setLocations(event.getLocations());
-        this.className = event.getClassDetails().replace(";;",";");
+        //this.className = event.getClassDetails().replace(";;",";");
+        this.className = event.getClassDetails().split(";")[0];
         //setClassName(event.getClassDetails().split(";")[0]);
         this.classPrefix = className.split(" ")[0];
         //setClassPrefix(className.split(" ")[0]);
         this.faculty = event.getFaculty();
         //setFaculty(event.getFaculty());
-        System.out.println("in listing contructor: " + this);
-       // canBeScheduled = false;
+        status = "initiated";
+        this.isScheduled = false;
+        canBeScheduled = true;
     }
 
     public String getClassName() {
@@ -137,9 +144,45 @@ public abstract class Listing implements Scheduler {
     }
 
 
-   /* public boolean isCanBeScheduled() {
+    public void setNeedsToBeScheduled(Boolean needsToBeScheduled) {
+        this.needsToBeScheduled = needsToBeScheduled;
+    }
+
+    public boolean isNeedsToBeScheduled() {
+        return needsToBeScheduled;
+    }
+
+    public void setCanBeScheduled(Boolean canBeScheduled) {
+        this.canBeScheduled = canBeScheduled;
+    }
+
+    public boolean isCanBeScheduled() {
         return canBeScheduled;
-    }*/
+    }
+
+    public void setIsScheduled(Boolean isScheduled) {
+        this.isScheduled = isScheduled;
+    }
+
+    public boolean isScheduled() {
+        return isScheduled;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 
     public String toString() {
         return className + " " + StringUtils.join(locations, ",") + " " + startTime + " " + endTime;

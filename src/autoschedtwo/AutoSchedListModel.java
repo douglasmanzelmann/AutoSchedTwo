@@ -9,19 +9,19 @@ import java.util.Iterator;
 /**
  * Created by dmanzelmann on 6/4/2015.
  */
-public class AutoSchedListModel extends AbstractListModel<Listing> implements Iterable<Listing> {
-    ArrayList<Listing> list = new ArrayList<>();
+public class AutoSchedListModel<E> extends AbstractListModel<E> implements Iterable<E> {
+    ArrayList<E> list = new ArrayList<>();
 
     public int getSize() {
         return list.size();
     }
 
-    public Listing getElementAt(int index) {
+    public E getElementAt(int index) {
         return list.get(index);
     }
 
-    public void addElement(Listing listing) {
-        list.add(listing);
+    public void addElement(E e) {
+        list.add(e);
         fireIntervalAdded(this, list.size() - 1, list.size() - 1);
     }
 
@@ -34,8 +34,8 @@ public class AutoSchedListModel extends AbstractListModel<Listing> implements It
     }
 
     @Override
-    public Iterator<Listing> iterator() {
-        Iterator<Listing> it = new Iterator<Listing>() {
+    public Iterator<E> iterator() {
+        Iterator<E> it = new Iterator<E>() {
             private int currentIndex = 0;
 
             @Override
@@ -44,7 +44,7 @@ public class AutoSchedListModel extends AbstractListModel<Listing> implements It
             }
 
             @Override
-            public Listing next() {
+            public E next() {
                 return list.get(currentIndex++);
             }
 

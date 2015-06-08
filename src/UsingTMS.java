@@ -31,7 +31,7 @@ public class UsingTMS {
             TMSNewConferencePage newConferencePage = conferenceTemplatesPage.selectTemplateforVTC("PH N103", "USG 2131");
             TMSNewConferenceReviewPage conferenceReviewPage =
                     newConferencePage.createNewTMSSlot("Manzelmann", "5/25/2015", "11:00 AM", "5/25/2015", "12:00 PM", "1:00");
-        } catch (CodecInUseException e) {
+        } catch (Exception e) {
             System.out.println("Codec is in use.");
         }
 

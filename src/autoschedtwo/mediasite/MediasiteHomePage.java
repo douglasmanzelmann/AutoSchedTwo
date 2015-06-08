@@ -32,7 +32,7 @@ public class MediasiteHomePage extends Mediasite {
         pharmD.click();
     }
 
-    public void navigateToTraing() {
+    public void navigateToTraining() {
         training.click();
     }
 

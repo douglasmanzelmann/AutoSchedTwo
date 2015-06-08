@@ -16,9 +16,7 @@ import java.util.concurrent.*;
 public class PortalDriver extends Portal {
     private LinkedBlockingQueue<WebElement> webElementsQueue;
     private LinkedBlockingQueue<Future<Listing>> listingQueue;
-    private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    //private ExecutorService executor = Executors.newFixedThreadPool(6);
-    private boolean shutDown;
+    private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
 
     public void getScheduleElements(String username, String password, int year, int month, int day) {
         driver.get("https://rxsecure.umaryland.edu/apps/schedules/view/?type=search&searchtype=resource&id=100&start=" +
@@ -32,32 +30,32 @@ public class PortalDriver extends Portal {
         // could do a parallel stream
         while (webElementsQueue.peek() != null) {
             Callable<Listing> callable = new PortalListingCallable(webElementsQueue.poll());
-            //Future<Listing> future = executor.submit(callable);
-            Future<Listing> future = executor.submit(new Callable<Listing>() {
+            Future<Listing> future = executor.submit(callable);
+            /*Future<Listing> future = executor.submit(new Callable<Listing>() {
                 @Override
                 public Listing call() throws Exception {
                     try {
                         return callable.call();
                     } catch (Exception e) {
+                        if (e.getMessage().contains("Error communicating with the remote browser. It may have died.")) {
+                            System.out.println("CAUGHT EXCEPTION AND RECALLED");
+                            return callable.call();
+                        }
+
                         e.printStackTrace();
                         throw e;
                     }
                 }
-            });
+            });*/
             listingQueue.offer(future);
         }
 
         executor.shutdown();
     }
 
-    public boolean isShutDown() {
-        return shutDown;
-    }
-
     public PortalDriver(WebDriver driver, LinkedBlockingQueue listingQueue) {
         super(driver);
         this.listingQueue = listingQueue;
-        shutDown = false;
     }
 
     public PortalDriver(WebDriver driver) {

@@ -37,7 +37,7 @@ public class TMSNewConferencePage extends TMS {
     @FindBy(how = How.XPATH, using = "//*[@id=\"ctl00_uxContent_ctl01_saveButton\"]")
     WebElement save;
 
-    public void setStartDate(String date) {
+    public void setStartDate(String date) throws Exception {
         try {
             js.executeScript("arguments[0].value = '" + date + "';", startDate);
         } catch (StaleElementReferenceException e) {
@@ -79,8 +79,9 @@ public class TMSNewConferencePage extends TMS {
         save.click();
     }
 
+    //CodecInUseException
     public TMSNewConferenceReviewPage createNewTMSSlot(String user, String sd, String st, String ed, String et, String d)
-        throws CodecInUseException {
+        throws Exception {
 
         setUser(user);
         setStartDate(sd);

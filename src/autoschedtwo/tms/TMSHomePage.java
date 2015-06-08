@@ -16,7 +16,7 @@ public class TMSHomePage extends TMS {
     @FindBy(how = How.PARTIAL_LINK_TEXT, using = "Booking")
     WebElement booking;
 
-    public TMSConferenceTemplatesPage navigateToConferenceTemplates() {
+    public TMSConferenceTemplatesPage navigateToConferenceTemplates() throws Exception {
         new Actions(driver).moveToElement(booking).build().perform();
         booking.findElement(By.xpath("//span[text()='Conference Templates']")).click();
 

@@ -46,8 +46,9 @@ public class AutoSchedGUI {
 
     // ScrollPanel for list
     private JScrollPane listScrollPane = new JScrollPane();
-    private AutoSchedListModel listingListModel = new AutoSchedListModel();
+    private AutoSchedListModel<Listing> listingListModel = new AutoSchedListModel<>();
     private JList<Listing> listingJList = new JList<>(listingListModel);
+
 
     // Main panel
     private JPanel contentPanel = new JPanel(new BorderLayout());
@@ -107,6 +108,7 @@ public class AutoSchedGUI {
             }
         });
 
+        listingJList.setCellRenderer(new ListingCellRenderer());
         listScrollPane.setViewportView(listingJList);
         contentPanel.add(readSchedPanel, BorderLayout.PAGE_START);
         contentPanel.add(listScrollPane, BorderLayout.CENTER);
@@ -138,11 +140,9 @@ public class AutoSchedGUI {
         int month = Integer.parseInt(schedMonthText.getText());
         int day = Integer.parseInt(schedDayText.getText());
 
-        ReadSchedWorker readSchedWorker = new ReadSchedWorker(portalLogin, tmsLogin,
+        SchedWorker schedWorker = new SchedWorker(portalLogin, tmsLogin,
                 year, month, day);
-        readSchedWorker.execute();
-
-        //while (!readSchedWorker.isDone()) { }
+        schedWorker.execute();
 
         /*ScheduleActivityWorker scheduleActivityWorker =
                 new ScheduleActivityWorker(portalLogin,tmsLogin);
@@ -160,17 +160,19 @@ public class AutoSchedGUI {
         });
     }
 
-    private class ReadSchedWorker extends SwingWorker<Void, Listing> {
+    private class SchedWorker extends SwingWorker<Void, Listing> {
         private ChromeOptions options = new ChromeOptions();
         private WebDriver driver;
+        private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+        //private ExecutorCompletionService<Listing> completionService = new ExecutorCompletionService<>(executor);
         private LinkedBlockingQueue<Future<Listing>> listingQueue;
         private LoginFactory loginFactory;
         private int year;
         private int month;
         private int day;
 
-        public ReadSchedWorker(Login mediasiteLogin, Login tmsLogin,
-                               int year, int month, int day) {
+        public SchedWorker(Login mediasiteLogin, Login tmsLogin,
+                           int year, int month, int day) {
             System.setProperty("webdriver.chrome.driver", "\\\\private\\Home\\Desktop\\chromedriver.exe");
             listingQueue = new LinkedBlockingQueue<>();
             loginFactory = new LoginFactory(mediasiteLogin, tmsLogin);
@@ -190,15 +192,17 @@ public class AutoSchedGUI {
             portalDriver.getScheduleElements(portalUsername, portalPassword, year, month, day);
 
             while (!listingQueue.isEmpty()) {
-                System.out.println("beginning");
                 Future<Listing> futureListing = listingQueue.take();
-                System.out.println("future.isDone before get(): " + futureListing.isDone());
                 Listing listing = futureListing.get();
-                System.out.println("future.isDone after get(): " + futureListing.isDone());
-                System.out.println("before publish");
                 publish(listing);
-                System.out.println("after publish");
+                if (listing.isNeedsToBeScheduled() && listing.isCanBeScheduled()) {
+                    SchedActivityWorker schedActivityWorker =
+                            new SchedActivityWorker(listing,
+                                    loginFactory.getLogin(listing));
+                    executor.submit(schedActivityWorker);
+                }
             }
+
             return null;
         }
 
@@ -208,45 +212,43 @@ public class AutoSchedGUI {
                 listingListModel.addElement(listingItem);
             }
         }
+
+        @Override
+        protected void done() {
+            try {
+                this.get();
+            } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
+        }
+
+
     }
 
-    private class ScheduleActivityWorker extends SwingWorker<Void, Listing> {
-        private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        private ExecutorCompletionService<Listing> completionService = new ExecutorCompletionService<Listing>(executor);
-        private LoginFactory loginFactory;
-        private int numberOfTasks;
+    private class SchedActivityWorker extends SwingWorker<Void, Listing> {
+        private Listing listing;
+        private Login login;
 
-        public ScheduleActivityWorker(Login mediasiteLogin, Login tmsLogin) {
-            loginFactory = new LoginFactory(mediasiteLogin, tmsLogin);
-            numberOfTasks = 0;
-            System.out.println("in schedactivity constructor");
+        public SchedActivityWorker(Listing listing, Login login) {
+            this.listing = listing;
+            this.login = login;
         }
 
         @Override
         protected Void doInBackground() {
-            for (Listing listing : listingListModel) {
-                if (listing instanceof MediasiteListing || listing instanceof TMSListing) {
-                    Callable<Listing> callable = new ListingCallable(listing, loginFactory.getLogin(listing));
-                    completionService.submit(callable);
-                    numberOfTasks++;
-                }
-            }
-
-            for (int i = 0; i < numberOfTasks; i++) {
-                try {
-                    Listing listing = completionService.take().get();
-                    publish(listing);
-                }  catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
-            }
-
+            publish(listing.schedule(login.getUsername(), login.getPassword()));
             return null;
         }
 
         @Override
         protected void process(List<Listing> listings) {
-            for (Listing listing : listings) {
+            for (Listing listing : listings)
                 listingListModel.updateElement(listing);
-            }
+        }
+
+        @Override
+        protected void done() {
+            try {
+                this.get();
+            } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
         }
     }
 }

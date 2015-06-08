@@ -11,6 +11,9 @@ import java.util.List;
 public class GenericListing extends Listing {
     public GenericListing(PortalScheduleEventsEvent event) {
         super(event);
+        setActivity("");
+        setNeedsToBeScheduled(false);
+        setStatus("NA");
     }
 
     public Listing schedule(String username, String password) {

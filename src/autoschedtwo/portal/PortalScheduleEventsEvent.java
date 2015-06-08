@@ -78,11 +78,15 @@ public class PortalScheduleEventsEvent {
     }
 
     private void setFaculty(List<String> faculty) {
-        this.faculty = new ArrayList<>(faculty);
+        this.faculty = new ArrayList<>();
 
-        for (int i = 0; i < this.faculty.size(); i++) {
-            if (this.faculty.get(i).contains("PHARMD"))
-                this.faculty.remove(i);
+        for (String f : faculty) {
+            if (!f.contains("PHARMD")) {
+                this.faculty.add(f);
+            }
+            else {
+                break;
+            }
         }
     }
 

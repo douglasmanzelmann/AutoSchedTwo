@@ -7,6 +7,7 @@ import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.joda.time.DateTime;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
@@ -21,9 +22,9 @@ import java.util.concurrent.Callable;
  * Created by dmanzelmann on 5/26/2015.
  */
 public class MediasiteListing extends Listing  {
+    private ChromeOptions options;
     private WebDriver driver;
     private ElementLocatorFactory factory;
-    private boolean scheduled;
     private Login login;
 
     private final String description;
@@ -31,7 +32,8 @@ public class MediasiteListing extends Listing  {
     public MediasiteListing(PortalScheduleEventsEvent event) {
         super(event);
         description = event.getClassDetails().split(";")[2].trim();
-        scheduled = false;
+        setActivity("Mediasite");
+        setNeedsToBeScheduled(true);
     }
 
     /*public Listing call() {
@@ -45,35 +47,44 @@ public class MediasiteListing extends Listing  {
     }
 
     public MediasiteListing schedule(String username, String password) {
+        options = new ChromeOptions();
+        options.addArguments("--disable-extensions");
         driver = new ChromeDriver();
         factory = new AjaxElementLocatorFactory(driver, 30);
         driver.get("https://mediasite.umaryland.edu/Mediasite/Login?ReturnUrl=%2fmediasite%2fmanage");
 
-        MediasiteLoginPage loginPage = PageFactory.initElements(driver, MediasiteLoginPage.class);
-        MediasiteHomePage homePage = loginPage.login(username, password);
-        PageFactory.initElements(factory, homePage);
-        //homePage.navigateToSchoolOfPharmacy();
-        //homePage.navigateToPharmD();
-        homePage.navigateToTraing();
-        homePage.navigateToTesting();
+        try {
+            MediasiteLoginPage loginPage = PageFactory.initElements(driver, MediasiteLoginPage.class);
+            MediasiteHomePage homePage = loginPage.login(username, password);
+            PageFactory.initElements(factory, homePage);
+            homePage.navigateToSchoolOfPharmacy();
+            //homePage.navigateToPharmD();
+            homePage.navigateToTraining();
+            homePage.navigateToTesting();
 
-        //MediasiteFolderPage folderPage = homePage.navigateToFolder(getSemesterFolder(getStartTime(), getClassPrefix()));
-        //PageFactory.initElements(factory, folderPage);
-        MediasiteFolderPage folderPage = homePage.navigateToNowhere();
-        PageFactory.initElements(factory, folderPage);
+            //MediasiteFolderPage folderPage = homePage.navigateToFolder(getSemesterFolder(getStartTime(), getClassPrefix()));
+            //PageFactory.initElements(factory, folderPage);
+            MediasiteFolderPage folderPage = homePage.navigateToNowhere();
+            PageFactory.initElements(factory, folderPage);
 
-        MediasiteTemplatePage templatePage = folderPage.addNewPresentation();
-        PageFactory.initElements(factory, templatePage);
+            MediasiteTemplatePage templatePage = folderPage.addNewPresentation();
+            PageFactory.initElements(factory, templatePage);
 
-        MediasiteNewPresentationPage newPresentationPage = templatePage.selectDefaultTemplate();
-        PageFactory.initElements(factory, newPresentationPage);
+            MediasiteNewPresentationPage newPresentationPage = templatePage.selectDefaultTemplate();
+            PageFactory.initElements(factory, newPresentationPage);
 
-        MediasiteNewPresentationReviewPage newPresentationReviewPage =
-                newPresentationPage.createNewMediasitePresentation(getClassName() + getDateInMDYFormat(getStartTime()),
-                        getDescription(), getDateInMDYFormat(getStartTime()), getHour(getStartTime()), getMinute(getStartTime()),
-                        getTimeOfDay(getStartTime()), getFacultyAsQueue());
+            MediasiteNewPresentationReviewPage newPresentationReviewPage =
+                    newPresentationPage.createNewMediasitePresentation(getClassName() + " " + getDateInMDYFormat(getStartTime()),
+                            getDescription(), getDateInMDYFormat(getStartTime()), getHour(getStartTime()), getMinute(getStartTime()),
+                            getTimeOfDay(getStartTime()), getFacultyAsQueue());
 
-        scheduled = true;
+        } catch (Exception e) {
+            setStatus("failed");
+            e.printStackTrace();
+        }
+
+        setStatus("finished");
+        driver.close();
         return this;
     }
 

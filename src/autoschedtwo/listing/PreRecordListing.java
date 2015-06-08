@@ -11,6 +11,9 @@ import java.util.List;
 public class PreRecordListing extends Listing  {
     public PreRecordListing(PortalScheduleEventsEvent event) {
         super(event);
+        setActivity("Pre-record");
+        setNeedsToBeScheduled(false);
+        setStatus("NA");
     }
 
     public Listing schedule(String username, String password) {
