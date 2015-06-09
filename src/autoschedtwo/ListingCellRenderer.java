@@ -13,6 +13,7 @@ public class ListingCellRenderer extends JPanel implements ListCellRenderer<List
     JButton status;
     JLabel date;
     JLabel classDetails;
+    Color background;
 
     public ListingCellRenderer() {
         setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -56,7 +57,12 @@ public class ListingCellRenderer extends JPanel implements ListCellRenderer<List
             boolean isSelected,
             boolean cellHasFocus) {
         initComponents(listing);
+        if (isSelected)
+            background = Color.WHITE;
+        else
+            background = Color.LIGHT_GRAY;
 
+        setBackground(background);
 
         return this;
     }

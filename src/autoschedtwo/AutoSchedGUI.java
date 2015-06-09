@@ -195,12 +195,12 @@ public class AutoSchedGUI {
                 Future<Listing> futureListing = listingQueue.take();
                 Listing listing = futureListing.get();
                 publish(listing);
-                if (listing.isNeedsToBeScheduled() && listing.isCanBeScheduled()) {
+                /*if (listing.isNeedsToBeScheduled() && listing.isCanBeScheduled()) {
                     SchedActivityWorker schedActivityWorker =
                             new SchedActivityWorker(listing,
                                     loginFactory.getLogin(listing));
                     executor.submit(schedActivityWorker);
-                }
+                }*/
             }
 
             executor.shutdown();
