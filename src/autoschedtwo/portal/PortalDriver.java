@@ -16,7 +16,8 @@ import java.util.concurrent.*;
 public class PortalDriver extends Portal {
     private LinkedBlockingQueue<WebElement> webElementsQueue;
     private LinkedBlockingQueue<Future<Listing>> listingQueue;
-    private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+    //private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
+    private ExecutorService executor;
 
     public void getScheduleElements(String username, String password, int year, int month, int day) {
         driver.get("https://rxsecure.umaryland.edu/apps/schedules/view/?type=search&searchtype=resource&id=100&start=" +
@@ -50,12 +51,13 @@ public class PortalDriver extends Portal {
             listingQueue.offer(future);
         }
 
-        executor.shutdown();
+        //executor.shutdown();
     }
 
-    public PortalDriver(WebDriver driver, LinkedBlockingQueue listingQueue) {
+    public PortalDriver(WebDriver driver, LinkedBlockingQueue listingQueue, ExecutorService executor) {
         super(driver);
         this.listingQueue = listingQueue;
+        this.executor = executor;
     }
 
     public PortalDriver(WebDriver driver) {

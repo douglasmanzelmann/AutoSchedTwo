@@ -66,6 +66,11 @@ public abstract class Listing implements Scheduler {
     }
 
     protected String getHour(DateTime date) {
+        int hour = date.getHourOfDay();
+
+        if (hour > 12)
+            return Integer.toString(hour - 12);
+
         return Integer.toString(date.getHourOfDay());
     }
 

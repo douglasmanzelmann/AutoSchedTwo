@@ -40,7 +40,7 @@ public class TMSNewConferencePage extends TMS {
     public void setStartDate(String date) throws Exception {
         try {
             js.executeScript("arguments[0].value = '" + date + "';", startDate);
-        } catch (StaleElementReferenceException e) {
+        } catch (StaleElementReferenceException | NoSuchElementException e) {
             startDate = driver.findElement(By.xpath("//*[@id=\"ctl00_uxContent_ctl01_conferenceTime_dpStartDate_textBox\"]"));
             js.executeScript("arguments[0].value = '" + date + "';", startDate);
         }

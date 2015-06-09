@@ -188,7 +188,7 @@ public class AutoSchedGUI {
 
             String portalUsername = loginFactory.getPortalUsername();
             String portalPassword = loginFactory.getPortalPassword();
-            PortalDriver portalDriver = new PortalDriver(driver, listingQueue);
+            PortalDriver portalDriver = new PortalDriver(driver, listingQueue, executor);
             portalDriver.getScheduleElements(portalUsername, portalPassword, year, month, day);
 
             while (!listingQueue.isEmpty()) {
@@ -203,6 +203,7 @@ public class AutoSchedGUI {
                 }
             }
 
+            executor.shutdown();
             return null;
         }
 
