@@ -122,7 +122,7 @@ public abstract class Listing implements Scheduler, Screenshot {
      * @param date a DateTime object
      * @return a String
      */
-    protected String getDateInMDYFormat(DateTime date) {
+    public String getDateInMDYFormat(DateTime date) {
         DateTimeFormatter MDYFmt = DateTimeFormat.forPattern("MM/dd/y");
         return date.toString(MDYFmt);
     }
@@ -133,7 +133,7 @@ public abstract class Listing implements Scheduler, Screenshot {
      * @param date a DateTime object
      * @return a String
      */
-    protected String getTime(DateTime date) {
+    public String getTime(DateTime date) {
         DateTimeFormatter time = DateTimeFormat.forPattern("hh:mm a");
         return date.toString(time);
     }

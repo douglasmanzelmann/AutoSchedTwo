@@ -31,7 +31,9 @@ public class ListingCellRenderer extends JPanel implements ListCellRenderer<List
     private void initComponents(Listing listing) {
         activty.setText(listing.getActivity());
         status.setBackground(setStatus(listing.getStatus()));
-        date.setText(listing.getStartTime().toString());
+        date.setText(listing.getDateInMDYFormat(listing.getStartTime()) + ": " +
+                listing.getTime(listing.getStartTime()) + " - " +
+                listing.getTime(listing.getEndTime()));
         classDetails.setText(listing.getClassName());
     }
 

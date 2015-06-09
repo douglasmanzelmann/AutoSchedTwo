@@ -170,7 +170,6 @@ public class AutoSchedGUI {
         private ChromeOptions options = new ChromeOptions();
         private WebDriver driver;
         private ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() / 2);
-        //private ExecutorCompletionService<Listing> completionService = new ExecutorCompletionService<>(executor);
         private LinkedBlockingQueue<Future<Listing>> listingQueue;
         private LoginFactory loginFactory;
         private int year;
@@ -201,12 +200,12 @@ public class AutoSchedGUI {
                 Future<Listing> futureListing = listingQueue.take();
                 Listing listing = futureListing.get();
                 publish(listing);
-                if (listing.isNeedsToBeScheduled() && listing.isCanBeScheduled()) {
+                /*if (listing.isNeedsToBeScheduled() && listing.isCanBeScheduled()) {
                     SchedActivityWorker schedActivityWorker =
                             new SchedActivityWorker(listing,
                                     loginFactory.getLogin(listing));
                     executor.submit(schedActivityWorker);
-                }
+                }*/
             }
 
             executor.shutdown();
