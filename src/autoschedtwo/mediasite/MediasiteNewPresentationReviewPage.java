@@ -7,7 +7,6 @@ import org.openqa.selenium.WebDriver;
  */
 public class MediasiteNewPresentationReviewPage extends Mediasite {
 
-    // Take a Screenshot in here
 
     public MediasiteNewPresentationReviewPage(WebDriver driver) {
         super(driver);

@@ -2,25 +2,33 @@ package autoschedtwo.listing;
 
 import autoschedtwo.Login;
 import autoschedtwo.Scheduler;
+import autoschedtwo.Screenshot;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import autoschedtwo.tms.*;
 import org.apache.commons.lang3.text.WordUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public class TMSListing extends Listing {
+public class TMSListing extends Listing implements Screenshot {
     private ChromeOptions options;
     private WebDriver driver;
     private String baltimoreLocation;
     private String sgLocation;
+    private File scrFile;
     private Login login;
 
     public TMSListing(PortalScheduleEventsEvent event) {
@@ -94,10 +102,26 @@ public class TMSListing extends Listing {
             e.printStackTrace();
         }
 
-        driver.close();
         setStatus("finished");
+        takeScreenshot(driver);
+        driver.close();
 
         return this;
+    }
+
+    public void takeScreenshot(WebDriver driver) {
+        scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+    }
+
+    public BufferedImage getStatusScreenshot() {
+        BufferedImage image;
+        try {
+            image = ImageIO.read(scrFile);
+            return image;
+        }   catch (IOException e) { e.printStackTrace(); }
+
+
+        return null;
     }
 
     /*public String toString() {

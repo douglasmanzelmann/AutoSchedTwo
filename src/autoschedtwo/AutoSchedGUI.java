@@ -14,6 +14,8 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -108,6 +110,17 @@ public class AutoSchedGUI {
             }
         });
 
+        listingJList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                final int NUMBER_OF_CLICKS_TO_OPEN = 2;
+                JList<Listing> list = (JList<Listing>) e.getSource();
+                if (e.getClickCount() == NUMBER_OF_CLICKS_TO_OPEN) {
+                    int index = list.locationToIndex(e.getPoint());
+                    new StatusPanel(listingListModel.getElementAt(index));
+                }
+            }
+        });
         listingJList.setCellRenderer(new ListingCellRenderer());
         listScrollPane.setViewportView(listingJList);
         contentPanel.add(readSchedPanel, BorderLayout.PAGE_START);
@@ -122,7 +135,7 @@ public class AutoSchedGUI {
         AutoSchedGUI autoSchedGUI = new AutoSchedGUI();
 
         JFrame frame = new JFrame("AutoSchedTwo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().add(autoSchedGUI.getMainComponent());
         frame.pack();
         frame.setLocationByPlatform(true);
@@ -143,12 +156,6 @@ public class AutoSchedGUI {
         SchedWorker schedWorker = new SchedWorker(portalLogin, tmsLogin,
                 year, month, day);
         schedWorker.execute();
-
-        /*ScheduleActivityWorker scheduleActivityWorker =
-                new ScheduleActivityWorker(portalLogin,tmsLogin);
-        scheduleActivityWorker.execute();*/
-
-
     }
 
     public static void main(String[] args) {
@@ -195,12 +202,12 @@ public class AutoSchedGUI {
                 Future<Listing> futureListing = listingQueue.take();
                 Listing listing = futureListing.get();
                 publish(listing);
-                /*if (listing.isNeedsToBeScheduled() && listing.isCanBeScheduled()) {
+                if (listing.isNeedsToBeScheduled() && listing.isCanBeScheduled()) {
                     SchedActivityWorker schedActivityWorker =
                             new SchedActivityWorker(listing,
                                     loginFactory.getLogin(listing));
                     executor.submit(schedActivityWorker);
-                }*/
+                }
             }
 
             executor.shutdown();

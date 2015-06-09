@@ -2,9 +2,12 @@ package autoschedtwo.listing;
 
 import autoschedtwo.Login;
 import autoschedtwo.Scheduler;
+import autoschedtwo.Screenshot;
 import autoschedtwo.mediasite.*;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.joda.time.DateTime;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -12,6 +15,10 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,11 +28,12 @@ import java.util.concurrent.Callable;
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public class MediasiteListing extends Listing  {
+public class MediasiteListing extends Listing implements Screenshot {
     private ChromeOptions options;
     private WebDriver driver;
     private ElementLocatorFactory factory;
     private Login login;
+    private File scrFile;
 
     private final String description;
 
@@ -84,6 +92,7 @@ public class MediasiteListing extends Listing  {
         }
 
         setStatus("finished");
+        takeScreenshot(driver);
         driver.close();
         return this;
     }
@@ -116,6 +125,19 @@ public class MediasiteListing extends Listing  {
     /*public String toString() {
         return "Scheduled: " + scheduled + " " + super.toString();
     }*/
+
+    public void takeScreenshot(WebDriver driver) {
+        scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+    }
+
+    public BufferedImage getStatusScreenshot() {
+        try {
+            return ImageIO.read(scrFile);
+        }   catch (IOException e) { e.printStackTrace(); }
+
+
+        return null;
+    }
 
     public static void main(String[] args) {
         String temp = "PHAR535 Pharmaceutics Lectures \n" +

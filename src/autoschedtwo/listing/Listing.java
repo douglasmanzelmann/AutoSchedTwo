@@ -2,22 +2,21 @@ package autoschedtwo.listing;
 
 import autoschedtwo.DateUtils;
 import autoschedtwo.Scheduler;
+import autoschedtwo.Screenshot;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xpath.operations.Bool;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.Callable;
+
 
 
 /**
  * Created by dmanzelmann on 5/26/2015.
  */
-public abstract class Listing implements Scheduler {
+public abstract class Listing implements Scheduler, Screenshot {
     private final DateTime startTime;
     private final DateTime endTime;
     private final List<String> locations;
@@ -135,7 +134,7 @@ public abstract class Listing implements Scheduler {
      * @return a String
      */
     protected String getTime(DateTime date) {
-        DateTimeFormatter time = DateTimeFormat.forPattern("h:mm a");
+        DateTimeFormatter time = DateTimeFormat.forPattern("hh:mm a");
         return date.toString(time);
     }
 
@@ -189,8 +188,9 @@ public abstract class Listing implements Scheduler {
         return status;
     }
 
+
     public String toString() {
-        return className + " " + StringUtils.join(locations, ",") + " " + startTime + " " + endTime;
+        return className + " " + StringUtils.join(locations, ",") + " " + getTime(startTime) + " " + getTime(endTime);
     }
 
     public static void main(String[] args) {

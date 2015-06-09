@@ -1,8 +1,14 @@
 package autoschedtwo.listing;
 
 import autoschedtwo.portal.PortalScheduleEventsEvent;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -20,5 +26,14 @@ public class PreRecordListing extends Listing  {
         System.out.println("schedule pre-record");
 
         return this;
+    }
+
+    public void takeScreenshot(WebDriver driver) {
+
+    }
+
+    public BufferedImage getStatusScreenshot() {
+        BufferedImage stubImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        return stubImage;
     }
 }
