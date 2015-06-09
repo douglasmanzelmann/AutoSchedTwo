@@ -1,4 +1,4 @@
-package autoschedtwo;
+package autoschedtwo.GuiUtils;
 
 import org.openqa.selenium.WebDriver;
 

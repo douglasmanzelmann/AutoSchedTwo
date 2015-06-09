@@ -1,4 +1,4 @@
-package autoschedtwo;
+package autoschedtwo.GuiUtils;
 
 import autoschedtwo.listing.Listing;
 

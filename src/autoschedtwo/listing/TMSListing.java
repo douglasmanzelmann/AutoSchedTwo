@@ -1,15 +1,13 @@
 package autoschedtwo.listing;
 
 import autoschedtwo.Login;
-import autoschedtwo.Scheduler;
-import autoschedtwo.Screenshot;
+import autoschedtwo.GuiUtils.Screenshot;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import autoschedtwo.tms.*;
 import org.apache.commons.lang3.text.WordUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -17,8 +15,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * Created by dmanzelmann on 5/26/2015.

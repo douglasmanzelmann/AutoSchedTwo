@@ -1,8 +1,7 @@
 package autoschedtwo.listing;
 
 import autoschedtwo.Login;
-import autoschedtwo.Scheduler;
-import autoschedtwo.Screenshot;
+import autoschedtwo.GuiUtils.Screenshot;
 import autoschedtwo.mediasite.*;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.joda.time.DateTime;
@@ -23,7 +22,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.Callable;
 
 /**
  * Created by dmanzelmann on 5/26/2015.

@@ -2,7 +2,7 @@ package autoschedtwo.listing;
 
 import autoschedtwo.DateUtils;
 import autoschedtwo.Scheduler;
-import autoschedtwo.Screenshot;
+import autoschedtwo.GuiUtils.Screenshot;
 import autoschedtwo.portal.PortalScheduleEventsEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;

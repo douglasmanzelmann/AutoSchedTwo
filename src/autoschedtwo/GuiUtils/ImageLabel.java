@@ -1,4 +1,4 @@
-package autoschedtwo;
+package autoschedtwo.GuiUtils;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
