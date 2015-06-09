@@ -223,6 +223,7 @@ public class AutoSchedGUI {
         protected void done() {
             try {
                 this.get();
+                driver.close();
             } catch (InterruptedException | ExecutionException e) { e.printStackTrace(); }
         }
 
